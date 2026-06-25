@@ -2,6 +2,7 @@
 <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
 <title>NutriCam IA - Plano Completo</title>
 <script src="https://cdn.tailwindcss.com"></script>
+<script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
 <style>.field-label{display:block;font-size:12px;font-weight:800;color:#64748b;margin:0 0 4px 2px}.field-help{font-size:11px;color:#64748b;margin-top:3px}.form-box{display:flex;flex-direction:column;gap:4px}.tab{display:none}.tab.active{display:block}.modal{display:none}.modal.active{display:flex}.card{background:#fff;border:1px solid #e5e7eb;border-radius:24px;box-shadow:0 6px 18px #0f172a0f}.bar{height:10px;background:#e5e7eb;border-radius:999px;overflow:hidden}.bar>div{height:100%;transition:.25s}.pill{border:1px solid #d1fae5;background:#ecfdf5;color:#047857;border-radius:999px;padding:2px 8px;font-size:11px;font-weight:700}.chart-wrap{height:260px}.mini-note{font-size:11px;color:#64748b}.qty-badge{display:inline-flex;gap:4px;align-items:center;background:#f1f5f9;border-radius:999px;padding:2px 8px;font-size:11px;font-weight:800;color:#334155}
 :root{--brand:#059669;--brand2:#0f766e;--ink:#0f172a}
 .app-bg{background:radial-gradient(circle at top left,#d1fae5 0,#f8fafc 28%,#eef2ff 100%)}
@@ -16,6 +17,9 @@
 .tip-card{border:1px solid #e2e8f0;background:linear-gradient(180deg,#fff,#f8fafc);border-radius:18px;padding:12px}
 .tip-good{background:#ecfdf5;border-color:#bbf7d0}.tip-warn{background:#fff7ed;border-color:#fed7aa}.tip-info{background:#eff6ff;border-color:#bfdbfe}
 nav{backdrop-filter:blur(14px)}
+nav button.nav-active{color:#059669!important;background:#ecfdf5;border-radius:18px;box-shadow:inset 0 0 0 1px #a7f3d0;transform:translateY(-2px)}
+nav button.nav-active p{font-weight:900}
+nav button.nav-active::first-line{font-size:20px}
 @media(max-width:700px){.chart-wrap{height:220px}.hero-number{font-size:34px}}
 </style>
 
@@ -35,7 +39,7 @@ nav{backdrop-filter:blur(14px)}
 <div class="grid grid-cols-2 gap-3 mt-4"><button onclick="pickPhoto()" class="soft-button bg-emerald-600 text-white rounded-2xl p-5 font-black">📸 Analisar foto</button><button onclick="copyDefaultPlan()" class="soft-button bg-blue-600 text-white rounded-2xl p-5 font-black">📋 Inserir plano padrão</button></div><input id="photo" type="file" accept="image/*" capture="environment" class="hidden" onchange="handlePhoto(this)">
 <div class="form-box mt-3"><label class="field-label" for="mealText">DESCREVA A REFEIÇÃO</label><textarea id="mealText" rows="3" class="w-full border rounded-2xl p-3" placeholder="Ex: 150g arroz, 100g feijão, 180g frango, salada e azeite"></textarea><p class="field-help">A IA separa os alimentos item por item e abre uma revisão antes de salvar.</p></div><div class="grid grid-cols-2 gap-2 mt-2"><button onclick="analyzeText()" class="bg-teal-600 text-white rounded-2xl p-3 font-bold">Analisar texto</button><button onclick="openManual()" class="bg-gray-200 rounded-2xl p-3 font-bold">Manual</button></div><div id="loading" class="hidden mt-3 bg-emerald-50 rounded-2xl p-4 text-center font-bold text-emerald-700">Analisando...</div><div id="debug" class="hidden mt-3 text-xs bg-red-50 text-red-800 rounded-xl p-3 whitespace-pre-wrap"></div></div>
 <div class="card hero-card p-5"><div class="flex justify-between items-start gap-3"><div><h2 class="font-black text-xl mb-1">Resumo do dia</h2><p class="text-xs text-emerald-50/80">Calorias restantes</p></div><span class="bg-white/15 border border-white/20 rounded-full px-3 py-1 text-xs font-black">Meta diária</span></div><p id="remaining" class="hero-number text-5xl font-black mt-2">0 kcal</p><p class="text-sm text-emerald-50/85">Meta <b id="goalCal">0</b> • Consumido <b id="usedCal">0</b></p><div class="bar mt-4"><div id="calBar" class="bg-white"></div></div><div class="grid grid-cols-3 gap-2 mt-5 text-slate-800"><div class="metric-card"><p class="text-xs font-bold text-indigo-700">PROT.</p><p id="prot" class="font-black">0/0g</p></div><div class="metric-card"><p class="text-xs font-bold text-amber-700">CARBO</p><p id="carb" class="font-black">0/0g</p></div><div class="metric-card"><p class="text-xs font-bold text-rose-700">GORD.</p><p id="fat" class="font-black">0/0g</p></div></div><div class="bg-white/15 rounded-2xl p-4 mt-5 flex justify-between border border-white/20"><div><p class="font-bold text-white">Água</p><p id="water" class="text-xl font-black">0/0 ml</p><p id="cups" class="text-xs text-emerald-50/80"></p></div><button onclick="addWater()" class="soft-button bg-white text-teal-700 rounded-xl px-4 py-2 font-black">+ copo</button></div></div>
-<div class="card p-5 md:col-span-2"><div class="flex justify-between items-start gap-3 flex-wrap"><div><h2 class="font-black text-xl">Gráficos do dia</h2><p class="text-sm text-gray-500">Distribuição por refeição e evolução das macros.</p></div><span id="chartStatus" class="pill">Atualizado</span></div><div class="grid md:grid-cols-2 gap-4 mt-4"><div class="canvas-card p-3"><p class="font-bold text-sm text-gray-600 mb-2">Calorias por refeição</p><canvas id="mealChart" width="520" height="260" class="w-full rounded-2xl"></canvas></div><div class="canvas-card p-3"><p class="font-bold text-sm text-gray-600 mb-2">Macros consumidas x meta</p><canvas id="macroChart" width="520" height="260" class="w-full rounded-2xl"></canvas></div></div></div>
+
 <div class="card p-5 md:col-span-2"><div class="flex justify-between items-start gap-3 flex-wrap"><div><h2 class="font-black text-xl">O que pode acrescentar hoje</h2><p class="text-sm text-gray-500">Sugestões automáticas conforme suas metas e registros do dia.</p></div><span id="suggestionBadge" class="pill">Análise do dia</span></div><div id="nutritionTips" class="grid md:grid-cols-3 gap-3 mt-4"></div></div>
 
 </div>
@@ -65,11 +69,76 @@ nav{backdrop-filter:blur(14px)}
 <div id="logs" class="space-y-4"></div></section>
 
 <section id="plano" class="tab space-y-4"><div class="card p-5"><h2 class="text-2xl font-black">Plano alimentar completo</h2><p class="text-sm text-gray-500">Inclui refeições principais, opções 2/SOS/3, ceia e substituições.</p><div class="grid md:grid-cols-2 gap-2 mt-3"><button onclick="copyDefaultPlan()" class="bg-blue-600 text-white rounded-2xl p-3 font-bold">Inserir plano padrão no diário</button><button onclick="showOnlySubs()" class="bg-emerald-100 text-emerald-800 rounded-2xl p-3 font-bold">Ver substituições</button></div></div><div id="planBox" class="space-y-4"></div></section>
-<section id="peso" class="tab"><div class="card p-5"><h2 class="text-2xl font-black">Cadastro de peso</h2><div class="grid md:grid-cols-3 gap-3 mt-3"><div class="form-box"><label class="field-label" for="weightDate">DATA DA PESAGEM</label><input id="weightDate" type="date" class="border rounded-2xl p-3"></div><div class="form-box"><label class="field-label" for="weightValue">PESO (kg)</label><input id="weightValue" type="number" step=".1" class="border rounded-2xl p-3" placeholder="Ex: 97.0"></div><button onclick="saveWeight()" class="bg-emerald-600 text-white rounded-2xl p-3 font-black">Salvar peso</button></div><div id="weightGoalBox" class="grid md:grid-cols-4 gap-3 mt-4"></div><canvas id="weightCanvas" width="900" height="280" class="w-full mt-5 bg-gray-50 rounded-2xl border"></canvas><div id="weightList" class="mt-4 space-y-2"></div></div></section>
+<section id="peso" class="tab"><div class="card p-5"><div class="flex justify-between items-start gap-3 flex-wrap"><div><h2 class="text-2xl font-black">Cadastro de peso</h2><p class="text-sm text-gray-500">Cadastre, edite ou exclua pesagens anteriores.</p></div><button id="cancelWeightEditBtn" onclick="cancelWeightEdit()" class="hidden bg-gray-100 rounded-2xl px-4 py-2 font-bold">Cancelar edição</button></div><input id="weightEditDate" type="hidden"><div class="grid md:grid-cols-3 gap-3 mt-3"><div class="form-box"><label class="field-label" for="weightDate">DATA DA PESAGEM</label><input id="weightDate" type="date" class="border rounded-2xl p-3"></div><div class="form-box"><label class="field-label" for="weightValue">PESO (kg)</label><input id="weightValue" type="number" step=".1" class="border rounded-2xl p-3" placeholder="Ex: 97.0"></div><button id="weightSaveBtn" onclick="saveWeight()" class="bg-emerald-600 text-white rounded-2xl p-3 font-black">Salvar peso</button></div><div class="form-box mt-3"><label class="field-label" for="weightSearch">BUSCAR POR DATA</label><input id="weightSearch" oninput="renderWeights()" type="date" class="border rounded-2xl p-3 max-w-xs"></div><div id="weightGoalBox" class="grid md:grid-cols-4 gap-3 mt-4"></div><canvas id="weightCanvas" width="900" height="320" onclick="weightCanvasClick(event)" class="w-full mt-5 bg-gray-50 rounded-2xl border"></canvas><p class="mini-note mt-2">Toque em um ponto do gráfico para editar a pesagem.</p><div id="weightUndoBox" class="hidden mt-3"></div><div id="weightList" class="mt-4 space-y-2"></div></div></section>
 <section id="base" class="tab"><div class="card p-5"><div class="flex justify-between"><div><h2 class="text-2xl font-black">Base de alimentos do plano</h2><p class="text-sm text-gray-500" id="foodCount"></p></div><button onclick="openFood()" class="bg-emerald-600 text-white rounded-xl px-4 py-2 font-bold">Novo</button></div><div class="form-box mt-4"><label class="field-label" for="foodSearch">PESQUISAR NA BASE</label><input id="foodSearch" oninput="renderFoods()" class="w-full border rounded-2xl p-3" placeholder="Digite arroz, frango, fruta, queijo..."></div><div id="foods" class="mt-4 max-h-[60vh] overflow-auto"></div></div></section>
-<section id="perfil" class="tab"><div class="grid md:grid-cols-2 gap-4"><div class="card p-5 space-y-3"><h2 class="text-2xl font-black">Perfil e API</h2><div class="form-box"><label class="field-label" for="apiKey">GEMINI API KEY</label><input id="apiKey" type="password" class="w-full border rounded-2xl p-3" placeholder="Cole sua chave Gemini"></div><div class="form-box"><label class="field-label" for="model">MODELO DE IA</label><select id="model" class="w-full border rounded-2xl p-3"><option value="gemini-2.5-flash">gemini-2.5-flash</option><option value="gemini-2.0-flash">gemini-2.0-flash</option><option value="gemini-1.5-flash">gemini-1.5-flash</option></select></div><div class="grid grid-cols-2 gap-3"><div class="form-box"><label class="field-label" for="pWeight">PESO ATUAL (kg)</label><input id="pWeight" type="number" class="border rounded-2xl p-3" placeholder="Ex: 97"></div><div class="form-box"><label class="field-label" for="pHeight">ALTURA (cm)</label><input id="pHeight" type="number" class="border rounded-2xl p-3" placeholder="Ex: 171"></div><div class="form-box"><label class="field-label" for="pAge">IDADE</label><input id="pAge" type="number" class="border rounded-2xl p-3" placeholder="Ex: 35"></div><div class="form-box"><label class="field-label" for="pGender">SEXO</label><select id="pGender" class="border rounded-2xl p-3"><option value="male">Masculino</option><option value="female">Feminino</option></select></div></div><div class="form-box"><label class="field-label" for="pActivity">NÍVEL DE ATIVIDADE</label><select id="pActivity" class="w-full border rounded-2xl p-3"><option value="sedentary">Sedentário</option><option value="light">Leve</option><option value="moderate">Moderado</option><option value="active">Alto</option></select></div><div class="form-box"><label class="field-label" for="pGoal">OBJETIVO</label><select id="pGoal" class="w-full border rounded-2xl p-3"><option value="maintain">Manter</option><option value="reduce">Reduzir gordura gradualmente</option><option value="gain">Ganhar massa gradualmente</option></select></div><div class="grid grid-cols-2 gap-3"><div class="form-box"><label class="field-label" for="cupSize">TAMANHO DO COPO (ml)</label><input id="cupSize" type="number" class="border rounded-2xl p-3" placeholder="Ex: 250"></div><div class="form-box"><label class="field-label" for="waterMlKg">ÁGUA POR kg (ml)</label><input id="waterMlKg" type="number" class="border rounded-2xl p-3" placeholder="Ex: 35"></div></div><div class="grid grid-cols-2 gap-3"><div class="form-box"><label class="field-label" for="targetWeight">META DE PESO (kg)</label><input id="targetWeight" type="number" step="0.1" class="border rounded-2xl p-3" placeholder="Ex: 73"></div><div class="form-box"><label class="field-label" for="weeklyLoss">RITMO ESTIMADO (kg/semana)</label><input id="weeklyLoss" type="number" step="0.1" min="0.1" max="1" class="border rounded-2xl p-3" placeholder="Ex: 0.5"></div></div><p class="field-help">A sugestão de peso usa faixa de IMC como referência geral. Ajuste a meta com acompanhamento profissional.</p><button onclick="saveProfile()" class="w-full bg-emerald-600 text-white rounded-2xl p-3 font-black">Salvar</button><button onclick="testApi()" class="w-full bg-gray-100 rounded-2xl p-3 font-black">Testar API</button></div><div class="card p-5"><h2 class="text-2xl font-black">Resultado</h2><div id="profileResult" class="mt-4 space-y-3"></div></div></div></section>
+<section id="perfil" class="tab"><div class="grid md:grid-cols-2 gap-4"><div class="card p-5 space-y-3"><h2 class="text-2xl font-black">Perfil e API</h2><div class="form-box"><label class="field-label" for="apiKey">GEMINI API KEY</label><input id="apiKey" type="password" class="w-full border rounded-2xl p-3" placeholder="Cole sua chave Gemini"></div><div class="form-box"><label class="field-label" for="model">MODELO DE IA</label><select id="model" class="w-full border rounded-2xl p-3"><option value="gemini-2.5-flash">gemini-2.5-flash</option><option value="gemini-2.0-flash">gemini-2.0-flash</option><option value="gemini-1.5-flash">gemini-1.5-flash</option></select></div><div class="grid grid-cols-2 gap-3"><div class="form-box"><label class="field-label" for="pWeight">PESO ATUAL (kg)</label><input id="pWeight" type="number" class="border rounded-2xl p-3" placeholder="Ex: 97"></div><div class="form-box"><label class="field-label" for="pHeight">ALTURA (cm)</label><input id="pHeight" type="number" class="border rounded-2xl p-3" placeholder="Ex: 171"></div><div class="form-box"><label class="field-label" for="pAge">IDADE</label><input id="pAge" type="number" class="border rounded-2xl p-3" placeholder="Ex: 35"></div><div class="form-box"><label class="field-label" for="pGender">SEXO</label><select id="pGender" class="border rounded-2xl p-3"><option value="male">Masculino</option><option value="female">Feminino</option></select></div></div><div class="form-box"><label class="field-label" for="pActivity">NÍVEL DE ATIVIDADE</label><select id="pActivity" class="w-full border rounded-2xl p-3"><option value="sedentary">Sedentário</option><option value="light">Leve</option><option value="moderate">Moderado</option><option value="active">Alto</option></select></div><div class="form-box"><label class="field-label" for="pGoal">OBJETIVO</label><select id="pGoal" class="w-full border rounded-2xl p-3"><option value="maintain">Manter</option><option value="reduce">Reduzir gordura gradualmente</option><option value="gain">Ganhar massa gradualmente</option></select></div><div class="grid grid-cols-2 gap-3"><div class="form-box"><label class="field-label" for="cupSize">TAMANHO DO COPO (ml)</label><input id="cupSize" type="number" class="border rounded-2xl p-3" placeholder="Ex: 250"></div><div class="form-box"><label class="field-label" for="waterMlKg">ÁGUA POR kg (ml)</label><input id="waterMlKg" type="number" class="border rounded-2xl p-3" placeholder="Ex: 35"></div></div><div class="grid grid-cols-2 gap-3"><div class="form-box"><label class="field-label" for="targetWeight">META DE PESO (kg)</label><input id="targetWeight" type="number" step="0.1" class="border rounded-2xl p-3" placeholder="Ex: 73"></div><div class="form-box"><label class="field-label" for="weeklyLoss">RITMO ESTIMADO (kg/semana)</label><input id="weeklyLoss" type="number" step="0.1" min="0.1" max="1" class="border rounded-2xl p-3" placeholder="Ex: 0.5"></div></div><p class="field-help">A sugestão de peso usa faixa de IMC como referência geral. Ajuste a meta com acompanhamento profissional.</p><button onclick="saveProfile()" class="w-full bg-emerald-600 text-white rounded-2xl p-3 font-black">Salvar</button><button onclick="testApi()" class="w-full bg-gray-100 rounded-2xl p-3 font-black">Testar API</button>
+<div class="grid grid-cols-2 gap-2">
+  <button onclick="exportExcelBackup()" class="w-full bg-blue-600 text-white rounded-2xl p-3 font-black">📤 Backup Excel</button>
+  <button onclick="document.getElementById('backupFile').click()" class="w-full bg-blue-50 text-blue-700 rounded-2xl p-3 font-black">📥 Importar JSON</button>
+</div>
+<input id="backupFile" type="file" accept="application/json" class="hidden" onchange="importJsonBackup(this)">
+<p class="field-help">O backup em Excel baixa abas com perfil, diário, pesos, alimentos e resumo. A importação usa JSON de segurança gerado pelo app.</p>
+</div><div class="card p-5"><h2 class="text-2xl font-black">Resultado</h2><div id="profileResult" class="mt-4 space-y-3"></div></div></div></section>
+
+
+<section id="atividade" class="tab space-y-4">
+  <div class="card p-5">
+    <div class="flex justify-between items-start gap-3 flex-wrap">
+      <div>
+        <h2 class="text-2xl font-black">Atividade física</h2>
+        <p class="text-sm text-gray-500">Marque apenas se você fez exercício no dia selecionado.</p>
+      </div>
+      <span id="activityBadge" class="pill">Hoje</span>
+    </div>
+
+    <div class="grid md:grid-cols-3 gap-3 mt-4 items-end">
+      <div class="form-box md:col-span-1">
+        <label class="field-label" for="activityDate">DATA DO EXERCÍCIO</label>
+        <input id="activityDate" type="date" class="border rounded-2xl p-3" onchange="setActivityDate(this.value)">
+      </div>
+      <button onclick="markExercise(true)" class="soft-button bg-emerald-600 text-white rounded-2xl p-4 font-black">✅ Fiz exercício</button>
+      <button onclick="markExercise(false)" class="soft-button bg-gray-100 text-gray-700 rounded-2xl p-4 font-black">⚪ Não fiz</button>
+    </div>
+
+    <div id="activityTodayBox" class="mt-4"></div>
+  </div>
+
+  <div class="card p-5">
+    <div class="flex justify-between items-center gap-3 flex-wrap">
+      <div>
+        <h2 class="font-black text-xl">Calendário de exercícios</h2>
+        <p class="text-sm text-gray-500">Veja os dias em que houve registro de atividade.</p>
+      </div>
+      <div class="flex gap-2">
+        <button onclick="changeActivityMonth(-1)" class="bg-gray-100 rounded-xl px-3 py-2 font-bold text-sm">← Mês</button>
+        <button onclick="goCurrentActivityMonth()" class="bg-emerald-100 text-emerald-800 rounded-xl px-3 py-2 font-bold text-sm">Atual</button>
+        <button onclick="changeActivityMonth(1)" class="bg-gray-100 rounded-xl px-3 py-2 font-bold text-sm">Mês →</button>
+      </div>
+    </div>
+    <div id="activityCalendarTitle" class="mt-4 font-black text-center text-slate-700"></div>
+    <div class="grid grid-cols-7 gap-2 text-center text-xs font-black text-gray-500 mt-3">
+      <div>Dom</div><div>Seg</div><div>Ter</div><div>Qua</div><div>Qui</div><div>Sex</div><div>Sáb</div>
+    </div>
+    <div id="activityCalendar" class="grid grid-cols-7 gap-2 mt-2"></div>
+    <div id="activityMonthSummary" class="mt-4 text-sm text-gray-600 text-center"></div>
+  </div>
+</section>
+
+<section id="receitas" class="tab space-y-4">
+  <div class="card p-5">
+    <div class="flex justify-between items-start gap-3 flex-wrap">
+      <div>
+        <h2 class="text-2xl font-black">Receitas fitness do dia</h2>
+        <p class="text-sm text-gray-500">Sugestões atualizadas por dia, em ciclo sem repetir receitas até acabar a lista.</p>
+      </div>
+      <span id="recipeDateBadge" class="pill">Hoje</span>
+    </div>
+    <div id="dailyRecipes" class="grid md:grid-cols-3 gap-4 mt-4"></div>
+  </div>
+</section>
+
 </main>
-<nav class="fixed bottom-0 left-0 right-0 bg-white border-t shadow z-40"><div class="max-w-6xl mx-auto grid grid-cols-5 text-center"><button onclick="tab('diario')" id="nav-diario" class="py-3 text-emerald-600 font-bold">🏠<p class="text-xs">Diário</p></button><button onclick="tab('plano')" id="nav-plano" class="py-3 text-gray-400 font-bold">📋<p class="text-xs">Plano</p></button><button onclick="tab('peso')" id="nav-peso" class="py-3 text-gray-400 font-bold">⚖️<p class="text-xs">Peso</p></button><button onclick="tab('base')" id="nav-base" class="py-3 text-gray-400 font-bold">🍽️<p class="text-xs">Base</p></button><button onclick="tab('perfil')" id="nav-perfil" class="py-3 text-gray-400 font-bold">👤<p class="text-xs">Perfil</p></button></div></nav>
+<nav class="fixed bottom-0 left-0 right-0 bg-white border-t shadow z-40"><div class="max-w-6xl mx-auto grid grid-cols-7 text-center"><button onclick="tab('diario')" id="nav-diario" class="py-3 text-emerald-600 font-bold">🏠<p class="text-xs">Diário</p></button><button onclick="tab('plano')" id="nav-plano" class="py-3 text-gray-400 font-bold">📋<p class="text-xs">Plano</p></button><button onclick="tab('peso')" id="nav-peso" class="py-3 text-gray-400 font-bold">⚖️<p class="text-xs">Peso</p></button><button onclick="tab('base')" id="nav-base" class="py-3 text-gray-400 font-bold">🍽️<p class="text-xs">Base</p></button><button onclick="tab('atividade')" id="nav-atividade" class="py-3 text-gray-400 font-bold">🏃<p class="text-xs">Atividade</p></button><button onclick="tab('receitas')" id="nav-receitas" class="py-3 text-gray-400 font-bold">🥗<p class="text-xs">Receitas</p></button><button onclick="tab('perfil')" id="nav-perfil" class="py-3 text-gray-400 font-bold">👤<p class="text-xs">Perfil</p></button></div></nav>
 <div id="reviewModal" class="modal fixed inset-0 bg-black/50 z-50 items-center justify-center p-4"><div class="bg-white rounded-3xl p-5 max-w-2xl w-full max-h-[90vh] overflow-auto"><div class="flex justify-between"><h3 class="text-xl font-black">Revisar antes de salvar</h3><button onclick="closeReview()" class="text-2xl">×</button></div><div class="form-box mt-3"><label class="field-label" for="reviewMeal">SALVAR NA REFEIÇÃO</label><select id="reviewMeal" class="w-full border rounded-2xl p-3"></select></div><div id="reviewItems" class="space-y-3 mt-3"></div><div class="flex gap-2 mt-4">
 <button onclick="addReviewItem()" class="flex-1 bg-teal-50 text-teal-700 border border-teal-200 rounded-2xl p-3 font-black">+ Adicionar alimento</button>
 <button onclick="saveReview()" class="flex-1 bg-emerald-600 text-white rounded-2xl p-3 font-black">Salvar no diário</button>
@@ -97,12 +166,53 @@ function measureLabel(food,qty,unit,grams){if(unit==="g")return `${grams} g`;if(
 function withMeasure(item,food,qty,unit){let grams=item.grams;return {...item,qty:+qty||1,unit:unit||"g",measure:measureLabel(food,+qty||1,unit||"g",grams),servingGrams:food.servingGrams||food._og||food.grams||grams}}
 window.onload=()=>{let s=localStorage.getItem("nutricam_full_plan_v2"); if(s) state=JSON.parse(s); init();}
 function uid(){return Date.now().toString(36)+Math.random().toString(36).slice(2,8)} function save(){localStorage.setItem("nutricam_full_plan_v2",JSON.stringify(state))}
-function sectionNames(){return SECTIONS.map(s=>s.name)} function init(){ensureProfileDefaults();let todayLocal=formatLocalDate(new Date());if(!state.logs[todayLocal])state.logs[todayLocal]={foods:[],water:0};state.date=todayLocal;if(!state.logs[state.date])state.logs[state.date]={foods:[],water:0};["reviewMeal","manualMeal"].forEach(id=>document.getElementById(id).innerHTML=sectionNames().map(m=>`<option>${m}</option>`).join(""));date.value=state.date;fillProfile();renderPlan();renderFoods();update()}
-function tab(id){document.querySelectorAll(".tab").forEach(x=>x.classList.remove("active"));document.getElementById(id).classList.add("active");document.querySelectorAll("nav button").forEach(b=>{b.classList.add("text-gray-400");b.classList.remove("text-emerald-600")});document.getElementById("nav-"+id).classList.add("text-emerald-600");if(id==="peso")renderWeights();if(id==="perfil")renderProfile();if(id==="plano")renderPlan()}
-function setDate(d){state.date=d;if(!state.logs[d])state.logs[d]={foods:[],water:0};save();update()}
-function targets(){let p=state.profile,bmr=p.gender==="male"?10*p.weight+6.25*p.height-5*p.age+5:10*p.weight+6.25*p.height-5*p.age-161,f={sedentary:1.2,light:1.375,moderate:1.55,active:1.725}[p.activity];let cal=bmr*f;if(p.goal==="reduce")cal-=Math.min(500,cal*.18);if(p.goal==="gain")cal+=Math.min(350,cal*.12);cal=Math.round(Math.max(1400,cal));let protein=Math.round(p.weight*1.8),fat=Math.round(cal*.25/9),carb=Math.round((cal-protein*4-fat*9)/4),water=Math.round(p.weight*p.waterMlKg);return{cal,protein,carb,fat,water,bmr:Math.round(bmr),tdee:Math.round(bmr*f),bmi:p.weight/((p.height/100)**2)}}
+function sectionNames(){return SECTIONS.map(s=>s.name)} function init(){ensureProfileDefaults();let todayLocal=formatLocalDate(new Date());if(!state.logs[todayLocal])state.logs[todayLocal]={foods:[],water:0};state.date=todayLocal;if(!state.logs[state.date])state.logs[state.date]={foods:[],water:0};["reviewMeal","manualMeal"].forEach(id=>document.getElementById(id).innerHTML=sectionNames().map(m=>`<option>${m}</option>`).join(""));date.value=state.date;fillProfile();renderPlan();renderFoods();update();tab("diario")}
+function tab(id){document.querySelectorAll(".tab").forEach(x=>x.classList.remove("active"));document.getElementById(id).classList.add("active");document.querySelectorAll("nav button").forEach(b=>{b.classList.add("text-gray-400");b.classList.remove("text-emerald-600","nav-active")});let active=document.getElementById("nav-"+id);active.classList.remove("text-gray-400");active.classList.add("text-emerald-600","nav-active");if(id==="peso")renderWeights();if(id==="perfil")renderProfile();if(id==="plano")renderPlan();if(id==="atividade")renderActivityPage();if(id==="receitas")renderDailyRecipes()}
+function setDate(d){state.date=d;if(!state.logs[d])state.logs[d]={foods:[],water:0};save();update();if(document.getElementById("atividade")?.classList.contains("active"))renderActivityPage()}
+function targets(){
+  let p=state.profile;
+  let peso=Number(p.weight||97);
+  let altura=Number(p.height||171);
+  let idade=Number(p.age||35);
+  let fator={sedentary:1.2,light:1.375,moderate:1.55,active:1.725}[p.activity]||1.55;
+
+  let bmr=p.gender==="male"
+    ? 10*peso+6.25*altura-5*idade+5
+    : 10*peso+6.25*altura-5*idade-161;
+
+  let tdee=bmr*fator;
+  let cal=tdee;
+
+  // Déficit baseado no ritmo estimado de perda:
+  // 1 kg/semana ≈ 7700 kcal/semana ≈ 1100 kcal/dia.
+  let ritmo=Number(p.weeklyLoss||0.5);
+  ritmo=Math.max(0.1,Math.min(1,ritmo));
+  let deficitDiario=(ritmo*7700)/7;
+
+  if(p.goal==="reduce")cal=tdee-deficitDiario;
+  if(p.goal==="gain")cal=tdee+Math.min(350,tdee*.12);
+
+  cal=Math.round(Math.max(1400,cal));
+
+  let protein=Math.round(peso*1.8);
+  let fat=Math.round(cal*.25/9);
+  let carb=Math.round((cal-protein*4-fat*9)/4);
+  let water=Math.round(peso*p.waterMlKg);
+
+  return{
+    cal,
+    protein,
+    carb,
+    fat,
+    water,
+    bmr:Math.round(bmr),
+    tdee:Math.round(tdee),
+    deficit:Math.round(deficitDiario),
+    bmi:peso/((altura/100)**2)
+  }
+}
 function totals(){return state.logs[state.date].foods.reduce((a,f)=>({cal:a.cal+f.kcal,p:a.p+f.p,c:a.c+f.c,g:a.g+f.g}),{cal:0,p:0,c:0,g:0})}
-function update(){let t=targets(),x=totals(),l=state.logs[state.date],over=x.cal>t.cal;dateLabel.textContent=state.date===new Date().toISOString().slice(0,10)?"Hoje":state.date;goalCal.textContent=t.cal;usedCal.textContent=Math.round(x.cal);remaining.textContent=Math.round(t.cal-x.cal)+" kcal";calBar.style.width=Math.min(100,x.cal/t.cal*100)+"%";prot.textContent=`${Math.round(x.p)}/${t.protein}g`;carb.textContent=`${Math.round(x.c)}/${t.carb}g`;fat.textContent=`${Math.round(x.g)}/${t.fat}g`;water.textContent=`${l.water}/${t.water} ml`;cups.textContent=`${Math.round(l.water/state.profile.cup)} copos de ${state.profile.cup} ml`;statusBox.className="mt-4 rounded-2xl p-4 font-bold text-center "+(over?"bg-red-50 text-red-700":"bg-emerald-50 text-emerald-700");statusBox.innerHTML=over?`⚠️ Você ultrapassou a meta em <b>${Math.round(x.cal-t.cal)} kcal</b>`:`✅ Dentro da meta. Ainda restam <b>${Math.round(t.cal-x.cal)} kcal</b>`;renderWeeklySummary();renderLogs();drawDailyCharts();renderSuggestions()}
+function update(){let t=targets(),x=totals(),l=state.logs[state.date],over=x.cal>t.cal;dateLabel.textContent=state.date===new Date().toISOString().slice(0,10)?"Hoje":state.date;goalCal.textContent=t.cal;usedCal.textContent=Math.round(x.cal);remaining.textContent=Math.round(t.cal-x.cal)+" kcal";calBar.style.width=Math.min(100,x.cal/t.cal*100)+"%";prot.textContent=`${Math.round(x.p)}/${t.protein}g`;carb.textContent=`${Math.round(x.c)}/${t.carb}g`;fat.textContent=`${Math.round(x.g)}/${t.fat}g`;water.textContent=`${l.water}/${t.water} ml`;cups.textContent=`${Math.round(l.water/state.profile.cup)} copos de ${state.profile.cup} ml`;statusBox.className="mt-4 rounded-2xl p-4 font-bold text-center "+(over?"bg-red-50 text-red-700":"bg-emerald-50 text-emerald-700");statusBox.innerHTML=over?`⚠️ Você ultrapassou a meta em <b>${Math.round(x.cal-t.cal)} kcal</b>`:`✅ Dentro da meta. Ainda restam <b>${Math.round(t.cal-x.cal)} kcal</b>`;renderWeeklySummary();renderLogs();renderSuggestions();if(document.getElementById("atividade")?.classList.contains("active"))renderActivityPage();if(document.getElementById("receitas")?.classList.contains("active"))renderDailyRecipes()}
 function mealOfLog(f){return f.meal||"Outros"}
 
 function parseLocalDate(str){let [y,m,d]=str.split("-").map(Number);return new Date(y,m-1,d)}
@@ -172,7 +282,65 @@ function renderSuggestions(){
   box.innerHTML=tips.slice(0,6).join("");
 }
 
-function renderLogs(){let c=logs,l=state.logs[state.date];c.innerHTML="";sectionNames().forEach(m=>{let arr=l.foods.filter(f=>mealOfLog(f)===m),k=arr.reduce((s,f)=>s+f.kcal,0);let h=`<div class="card p-5"><div class="flex justify-between"><h3 class="font-black text-teal-700">${m}</h3><b>${Math.round(k)} kcal</b></div>`;if(!arr.length)h+=`<p class="text-gray-400 italic text-sm mt-2">Sem registro</p>`;arr.forEach(f=>{let med=f.measure||`${f.grams} g`;h+=`<div class="border-t py-2 flex justify-between gap-2 text-sm"><div><b>${f.name}</b> <span class="qty-badge">${med}</span><p class="text-xs text-gray-500">${f.grams}g estimado • P ${f.p} • C ${f.c} • G ${f.g}</p></div><div class="text-right"><b>${f.kcal} kcal</b><br><button class="text-blue-600 text-xs" onclick="editLog('${f.id}')">editar</button> <button class="text-red-600 text-xs" onclick="delLog('${f.id}')">excluir</button></div></div>`});c.innerHTML+=h+"</div>"})}
+function preferredMeals(){
+  return ["Café-da-manhã","Colação","Almoço","Lanche","Jantar","Ceia: Hora de relaxar"];
+}
+function mealIcon(name){
+  if(name.includes("Café"))return "☕";
+  if(name==="Colação")return "🍎";
+  if(name==="Almoço")return "🍛";
+  if(name==="Lanche")return "🥪";
+  if(name==="Jantar")return "🍽️";
+  if(name.includes("Ceia"))return "🌙";
+  return "🍴";
+}
+function displayMealName(name){
+  if(name==="Colação")return "Lanche da manhã";
+  if(name==="Lanche")return "Lanche da tarde";
+  if(name==="Ceia: Hora de relaxar")return "Ceia";
+  return name;
+}
+function renderLogs(){
+  let c=logs,l=state.logs[state.date];c.innerHTML="";
+  let meals=preferredMeals();
+  meals.forEach((m,idx)=>{
+    let arr=l.foods.filter(f=>mealOfLog(f)===m);
+    if(m.includes("Ceia") && !arr.length)return;
+    let k=arr.reduce((s,f)=>s+Number(f.kcal||0),0);
+    let open=arr.length?"open":"";
+    let h=`<details class="card p-5" ${open}>
+      <summary class="cursor-pointer list-none">
+        <div class="flex justify-between items-center gap-3">
+          <div>
+            <h3 class="font-black text-teal-700 text-lg">${mealIcon(m)} ${displayMealName(m)}</h3>
+            <p class="text-xs text-gray-500">${arr.length} alimento${arr.length===1?"":"s"} registrado${arr.length===1?"":"s"}</p>
+          </div>
+          <div class="text-right">
+            <b class="text-lg">${Math.round(k)} kcal</b>
+            <p class="text-xs text-gray-400">toque para abrir</p>
+          </div>
+        </div>
+      </summary>
+      <div class="mt-3">`;
+    if(!arr.length)h+=`<p class="text-gray-400 italic text-sm mt-2">Sem registro</p>`;
+    arr.forEach(f=>{
+      let med=f.measure||`${f.grams} g`;
+      h+=`<div class="border-t py-3 flex justify-between gap-2 text-sm">
+        <div>
+          <b>${f.name}</b> <span class="qty-badge">${med}</span>
+          <p class="text-xs text-gray-500">${f.grams}g estimado • P ${f.p} • C ${f.c} • G ${f.g}</p>
+        </div>
+        <div class="text-right">
+          <b>${f.kcal} kcal</b><br>
+          <button class="text-blue-600 text-xs" onclick="editLog('${f.id}')">editar</button>
+          <button class="text-red-600 text-xs" onclick="delLog('${f.id}')">excluir</button>
+        </div>
+      </div>`;
+    });
+    h+=`</div></details>`;
+    c.innerHTML+=h;
+  });
+}
 function delLog(id){state.logs[state.date].foods=state.logs[state.date].foods.filter(f=>f.id!==id);save();update()} function editLog(id){let f=state.logs[state.date].foods.find(x=>x.id===id),g=prompt("Gramas:",f.grams);if(!g)return;let base=state.foods.find(x=>x.name===f.name)||f;Object.assign(f,scale(base,+g),{id,meal:f.meal,measure:`${+g} g`,qty:+g,unit:"g"});save();update()}
 function calcFoodByName(name,grams){let f=findFoodByName(name)||{name,grams:100,kcal:60,p:.8,c:15,g:.2};return scale(f,grams)}
 function scale(f,grams){let k=grams/(f.grams||100);return{name:f.name,grams,kcal:Math.round(f.kcal*k),p:+(f.p*k).toFixed(1),c:+(f.c*k).toFixed(1),g:+(f.g*k).toFixed(1)}}
@@ -187,6 +355,333 @@ function addSubItem(id,base,i){let sec=getSection(id),it=sec.subs[base][i],f=cal
 function pickPhoto(){if(!state.apiKey){alert("Cadastre a Gemini API Key em Perfil.");tab("perfil");return}photo.click()} function fileToDataURL(file){return new Promise((res,rej)=>{let r=new FileReader();r.onload=()=>res(r.result);r.onerror=rej;r.readAsDataURL(file)})} function resizeImage(dataURL,max=1024){return new Promise(res=>{let img=new Image();img.onload=()=>{let s=Math.min(1,max/Math.max(img.width,img.height)),cn=document.createElement("canvas");cn.width=img.width*s;cn.height=img.height*s;cn.getContext("2d").drawImage(img,0,0,cn.width,cn.height);res(cn.toDataURL("image/jpeg",.82))};img.src=dataURL})}
 async function handlePhoto(inp){let file=inp.files[0];if(!file)return;loading.classList.remove("hidden");debug.classList.add("hidden");try{let data=await resizeImage(await fileToDataURL(file));let items=await gemini([{text:promptText()},{inlineData:{mimeType:"image/jpeg",data:data.split(",")[1]}}]);openReview(items)}catch(e){debug.textContent=String(e.message||e);debug.classList.remove("hidden");alert("Erro na análise por imagem. Veja o debug em vermelho.")}finally{loading.classList.add("hidden");inp.value=""}}
 async function analyzeText(){let txt=mealText.value.trim();if(!txt)return;if(!state.apiKey){alert("Sem API: use Manual ou cadastre a chave.");return}loading.classList.remove("hidden");try{openReview(await gemini([{text:promptText()+"\\nDescrição: "+txt}]))}catch(e){debug.textContent=String(e.message||e);debug.classList.remove("hidden");alert("Erro na análise por texto.")}finally{loading.classList.add("hidden")}}
+
+function cleanTextForSheet(v){return String(v??"").replace(/<[^>]*>/g,"").trim()}
+function rowsProfile(){
+  let p=state.profile,t=targets(),wp=weightPlan();
+  return [
+    {campo:"Peso atual (kg)",valor:p.weight},
+    {campo:"Altura (cm)",valor:p.height},
+    {campo:"Idade",valor:p.age},
+    {campo:"Sexo",valor:p.gender},
+    {campo:"Atividade",valor:p.activity},
+    {campo:"Objetivo",valor:p.goal},
+    {campo:"Meta de peso (kg)",valor:p.targetWeight},
+    {campo:"Ritmo estimado (kg/semana)",valor:p.weeklyLoss},
+    {campo:"Meta calórica diária",valor:t.cal},
+    {campo:"TMB",valor:t.bmr},
+    {campo:"Gasto diário estimado",valor:t.tdee},
+    {campo:"Proteína meta (g)",valor:t.protein},
+    {campo:"Carboidrato meta (g)",valor:t.carb},
+    {campo:"Gordura meta (g)",valor:t.fat},
+    {campo:"Água meta (ml)",valor:t.water},
+    {campo:"IMC",valor:+t.bmi.toFixed(1)},
+    {campo:"Semanas estimadas",valor:wp.weeks},
+    {campo:"Meses estimados",valor:wp.months}
+  ];
+}
+function rowsDiary(){
+  let rows=[];
+  Object.entries(state.logs||{}).sort(([a],[b])=>a.localeCompare(b)).forEach(([date,log])=>{
+    (log.foods||[]).forEach(f=>rows.push({
+      data:date,
+      refeicao:mealOfLog(f),
+      alimento:f.name,
+      medida:f.measure||"",
+      gramas:f.grams||0,
+      kcal:f.kcal||0,
+      proteina_g:f.p||0,
+      carbo_g:f.c||0,
+      gordura_g:f.g||0
+    }));
+    if((log.water||0)>0)rows.push({data:date,refeicao:"Água",alimento:"Água",medida:`${log.water} ml`,gramas:"",kcal:0,proteina_g:0,carbo_g:0,gordura_g:0});
+  });
+  return rows.length?rows:[{aviso:"Sem registros no diário"}];
+}
+function rowsDailySummary(){
+  let t=targets();
+  return Object.entries(state.logs||{}).sort(([a],[b])=>a.localeCompare(b)).map(([date,log])=>{
+    let foods=log.foods||[];
+    let total=foods.reduce((s,f)=>s+Number(f.kcal||0),0);
+    let p=foods.reduce((s,f)=>s+Number(f.p||0),0);
+    let c=foods.reduce((s,f)=>s+Number(f.c||0),0);
+    let g=foods.reduce((s,f)=>s+Number(f.g||0),0);
+    return {data:date,kcal_consumidas:Math.round(total),meta_kcal:t.cal,saldo_kcal:Math.round(t.cal-total),proteina_g:+p.toFixed(1),carbo_g:+c.toFixed(1),gordura_g:+g.toFixed(1),agua_ml:log.water||0,status:total<=t.cal?"Dentro da meta":"Acima da meta"};
+  });
+}
+function exportExcelBackup(){
+  try{
+    if(typeof XLSX==="undefined"){alert("Biblioteca de Excel ainda não carregou. Tente novamente em alguns segundos.");return}
+    let wb=XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(wb,XLSX.utils.json_to_sheet(rowsProfile()),"Perfil");
+    XLSX.utils.book_append_sheet(wb,XLSX.utils.json_to_sheet(rowsDiary()),"Diario");
+    XLSX.utils.book_append_sheet(wb,XLSX.utils.json_to_sheet(rowsDailySummary()),"Resumo");
+    let actRows=[];Object.entries(state.activities||{}).forEach(([data,v])=>{if(Array.isArray(v)){if(v.length)actRows.push({data,exercicio:"sim"})}else if(v&&v.done){actRows.push({data,exercicio:"sim"})}});
+    XLSX.utils.book_append_sheet(wb,XLSX.utils.json_to_sheet(actRows.length?actRows:[{aviso:"Sem atividades registradas"}]),"Atividades");
+    XLSX.utils.book_append_sheet(wb,XLSX.utils.json_to_sheet((state.weights||[]).map(w=>({data:w.date,peso_kg:w.value||w.weight||w.kg||w}))),"Pesos");
+    XLSX.utils.book_append_sheet(wb,XLSX.utils.json_to_sheet((state.foods||[]).map(f=>({alimento:f.name,base_g:f.grams,kcal:f.kcal,proteina_g:f.p,carbo_g:f.c,gordura_g:f.g}))),"Alimentos");
+    let dt=formatLocalDate(new Date()).replaceAll("-","");
+    XLSX.writeFile(wb,`NutriCam_backup_${dt}.xlsx`);
+    downloadJsonBackup(false);
+  }catch(e){alert("Erro ao gerar backup Excel: "+String(e.message||e))}
+}
+function downloadJsonBackup(showAlert=true){
+  let data=JSON.stringify(state,null,2);
+  let blob=new Blob([data],{type:"application/json"});
+  let a=document.createElement("a");
+  a.href=URL.createObjectURL(blob);
+  a.download=`NutriCam_backup_${formatLocalDate(new Date()).replaceAll("-","")}.json`;
+  document.body.appendChild(a);a.click();a.remove();
+  setTimeout(()=>URL.revokeObjectURL(a.href),1000);
+  if(showAlert)alert("Backup JSON gerado.");
+}
+function importJsonBackup(inp){
+  let file=inp.files?.[0]; if(!file)return;
+  let reader=new FileReader();
+  reader.onload=()=>{
+    try{
+      let obj=JSON.parse(reader.result);
+      if(!obj.profile||!obj.logs||!obj.foods)throw new Error("Arquivo inválido para o NutriCam."); if(!obj.activities)obj.activities={};
+      state=obj;ensureProfileDefaults();save();fillProfile();renderPlan();renderFoods();update();alert("Backup importado com sucesso.");
+    }catch(e){alert("Erro ao importar backup: "+String(e.message||e))}
+    finally{inp.value=""}
+  };
+  reader.readAsText(file);
+}
+
+const ACTIVITY_EXAMPLES=[
+  {name:"Levantamento Terra (Barra)",met:6.0,type:"forca",primary:"Glúteos",secondary:"Isquiossurais, Quadríceps, Lombar, Dorsais, Trapézio",equipment:"Barra",difficulty:"Intermediário",muscles:["glutes","hamstrings","quads","lowerback","lats","traps","forearms"],desc:"Exercício completo para cadeia posterior, força e hipertrofia.",steps:["Pés na largura do quadril e barra próxima à canela.","Coluna neutra, peito aberto e abdômen firme.","Suba estendendo quadris e joelhos ao mesmo tempo.","Desça mantendo a barra próxima ao corpo."],common:"Arredondar a lombar ou deixar a barra afastada do corpo."},
+  {name:"Agachamento Livre",met:5.5,type:"forca",primary:"Quadríceps",secondary:"Glúteos, Posteriores, Core, Lombar",equipment:"Barra",difficulty:"Intermediário",muscles:["quads","glutes","hamstrings","core","lowerback"],desc:"Base para treino de pernas com alto recrutamento muscular.",steps:["Barra apoiada com firmeza e pés na largura dos ombros.","Desça flexionando joelhos e quadris.","Mantenha joelhos alinhados com os pés.","Suba contraindo pernas e glúteos."],common:"Jogar os joelhos para dentro ou perder a posição da lombar."},
+  {name:"Supino Reto",met:4.8,type:"forca",primary:"Peitoral",secondary:"Tríceps, Ombros anteriores",equipment:"Barra ou halteres",difficulty:"Intermediário",muscles:["chest","triceps","shoulders"],desc:"Movimento clássico para peitoral e força de empurrar.",steps:["Escápulas encaixadas no banco.","Desça a carga controlando até perto do peito.","Empurre mantendo punhos alinhados.","Não tire o quadril do banco."],common:"Abrir demais os cotovelos e perder controle na descida."},
+  {name:"Supino Inclinado",met:4.8,type:"forca",primary:"Peitoral superior",secondary:"Ombros, Tríceps",equipment:"Barra ou halteres",difficulty:"Intermediário",muscles:["upperchest","chest","shoulders","triceps"],desc:"Ênfase na porção superior do peitoral.",steps:["Banco inclinado em torno de 30°.","Desça com controle na linha alta do peito.","Empurre sem elevar os ombros.","Mantenha pés firmes no chão."],common:"Inclinar demais o banco, transformando o exercício em ombro."},
+  {name:"Crucifixo Máquina",met:3.8,type:"forca",primary:"Peitoral",secondary:"Ombros anteriores",equipment:"Máquina",difficulty:"Iniciante",muscles:["chest","shoulders"],desc:"Isolador para peitoral com trajetória guiada.",steps:["Ajuste o banco à altura do peito.","Una os braços à frente sem bater as placas.","Retorne com controle.","Mantenha peito aberto."],common:"Usar carga alta e encurtar a amplitude."},
+  {name:"Remada Curvada",met:5.2,type:"forca",primary:"Dorsais",secondary:"Trapézio, Bíceps, Lombar",equipment:"Barra",difficulty:"Intermediário",muscles:["lats","traps","biceps","lowerback","forearms"],desc:"Excelente para costas, postura e estabilidade do tronco.",steps:["Incline o tronco mantendo coluna neutra.","Puxe a barra em direção ao abdômen.","Aproxime as escápulas no final.","Desça com controle."],common:"Balançar o tronco para roubar o movimento."},
+  {name:"Remada Baixa",met:4.6,type:"forca",primary:"Dorsais",secondary:"Trapézio, Bíceps",equipment:"Polia",difficulty:"Iniciante",muscles:["lats","traps","biceps","forearms"],desc:"Movimento seguro e eficiente para espessura das costas.",steps:["Sente-se com coluna ereta.","Puxe a pegada em direção ao abdômen.","Feche as escápulas.","Volte sem arredondar o tronco."],common:"Puxar com a lombar em vez de usar as costas."},
+  {name:"Puxada Alta",met:4.7,type:"forca",primary:"Dorsais",secondary:"Bíceps, Trapézio, Ombros posteriores",equipment:"Polia",difficulty:"Iniciante",muscles:["lats","biceps","traps","rearshoulders","forearms"],desc:"Boa opção para desenvolver largura de costas.",steps:["Segure a barra com pegada confortável.","Puxe em direção à parte alta do peito.","Mantenha peito aberto.","Suba controlando sem perder tensão."],common:"Puxar atrás da nuca ou balançar demais o corpo."},
+  {name:"Barra Fixa",met:5.5,type:"forca",primary:"Dorsais",secondary:"Bíceps, Trapézio, Core",equipment:"Barra fixa",difficulty:"Avançado",muscles:["lats","biceps","traps","core","forearms"],desc:"Exercício exigente para costas e força relativa.",steps:["Segure a barra com firmeza.","Puxe o corpo até o queixo se aproximar da barra.","Desça controlando.","Mantenha abdômen firme."],common:"Subir com impulso e perder amplitude."},
+  {name:"Desenvolvimento Ombros",met:4.5,type:"forca",primary:"Ombros",secondary:"Tríceps, Trapézio, Core",equipment:"Halteres ou barra",difficulty:"Intermediário",muscles:["shoulders","triceps","traps","core"],desc:"Fortalece ombros e melhora a força acima da cabeça.",steps:["Comece com os pesos na altura dos ombros.","Empurre para cima sem arquear a lombar.","Controle a descida.","Mantenha abdômen firme."],common:"Inclinar o tronco para trás e sobrecarregar a lombar."},
+  {name:"Elevação Lateral",met:3.5,type:"forca",primary:"Ombros laterais",secondary:"Trapézio",equipment:"Halteres",difficulty:"Iniciante",muscles:["shoulders","traps"],desc:"Isolador para largura visual dos ombros.",steps:["Halteres ao lado do corpo.","Eleve até a linha dos ombros.","Cotovelos levemente flexionados.","Desça devagar."],common:"Subir com impulso ou encolher demais os ombros."},
+  {name:"Face Pull",met:3.6,type:"forca",primary:"Ombros posteriores",secondary:"Trapézio, Manguito",equipment:"Polia",difficulty:"Iniciante",muscles:["rearshoulders","traps","shoulders"],desc:"Ajuda postura e saúde dos ombros.",steps:["Polia na altura do rosto.","Puxe a corda em direção ao rosto.","Abra os cotovelos.","Retorne com controle."],common:"Usar carga alta e perder a rotação externa."},
+  {name:"Leg Press",met:5.0,type:"forca",primary:"Quadríceps",secondary:"Glúteos, Posteriores",equipment:"Máquina",difficulty:"Iniciante",muscles:["quads","glutes","hamstrings","calves"],desc:"Treino eficiente de pernas com boa estabilidade.",steps:["Apoie os pés na plataforma.","Desça controlando sem tirar o quadril do banco.","Empurre sem travar totalmente os joelhos.","Mantenha joelhos alinhados."],common:"Descer demais a ponto de a lombar descolar."},
+  {name:"Cadeira Extensora",met:3.8,type:"forca",primary:"Quadríceps",secondary:"",equipment:"Máquina",difficulty:"Iniciante",muscles:["quads"],desc:"Isolador para quadríceps.",steps:["Ajuste o encosto e o rolo na canela.","Estenda os joelhos até contrair o quadríceps.","Segure brevemente no topo.","Desça controlando."],common:"Chutar a carga sem controle."},
+  {name:"Mesa Flexora",met:3.8,type:"forca",primary:"Isquiossurais",secondary:"Panturrilhas",equipment:"Máquina",difficulty:"Iniciante",muscles:["hamstrings","calves"],desc:"Isolador para posterior de coxa.",steps:["Ajuste o rolo próximo ao tornozelo.","Flexione os joelhos controlando.","Contraia no final.","Retorne sem soltar o peso."],common:"Levantar o quadril do banco."},
+  {name:"Afundo com Halteres",met:5.0,type:"forca",primary:"Glúteos",secondary:"Quadríceps, Posteriores",equipment:"Halteres",difficulty:"Intermediário",muscles:["glutes","quads","hamstrings","core"],desc:"Unilateral para pernas, estabilidade e equilíbrio.",steps:["Dê um passo à frente.","Desça até formar ângulos confortáveis.","Empurre o chão para voltar.","Alterne as pernas."],common:"Deixar o joelho cair para dentro."},
+  {name:"Elevação Pélvica",met:4.5,type:"forca",primary:"Glúteos",secondary:"Posteriores, Core",equipment:"Barra ou máquina",difficulty:"Iniciante",muscles:["glutes","hamstrings","core"],desc:"Foco direto em glúteos.",steps:["Apoie as costas no banco.","Barra sobre o quadril com proteção.","Suba até alinhar tronco e coxas.","Contraia glúteos no topo."],common:"Hiperestender a lombar em vez de contrair glúteos."},
+  {name:"Panturrilha em Pé",met:3.5,type:"forca",primary:"Panturrilhas",secondary:"",equipment:"Máquina ou halteres",difficulty:"Iniciante",muscles:["calves"],desc:"Fortalece gastrocnêmio e tornozelos.",steps:["Fique em pé com apoio seguro.","Suba na ponta dos pés.","Contraia no topo.","Desça alongando."],common:"Fazer rápido demais e perder amplitude."},
+  {name:"Rosca Direta",met:3.5,type:"forca",primary:"Bíceps",secondary:"Antebraços",equipment:"Barra ou halteres",difficulty:"Iniciante",muscles:["biceps","forearms"],desc:"Exercício direto para braços.",steps:["Cotovelos próximos ao corpo.","Suba o peso sem balançar o tronco.","Contraia no topo.","Desça lentamente."],common:"Usar impulso e jogar o tronco para trás."},
+  {name:"Rosca Martelo",met:3.5,type:"forca",primary:"Bíceps braquial e braquial",secondary:"Antebraços",equipment:"Halteres",difficulty:"Iniciante",muscles:["biceps","forearms"],desc:"Variação com pegada neutra para braços e antebraços.",steps:["Pegada neutra com halteres.","Suba mantendo cotovelos fixos.","Contraia no topo.","Desça sem girar o punho."],common:"Abrir os cotovelos ou balançar o corpo."},
+  {name:"Tríceps Corda",met:3.5,type:"forca",primary:"Tríceps",secondary:"Ombros estabilizadores",equipment:"Polia",difficulty:"Iniciante",muscles:["triceps","shoulders"],desc:"Isolador eficiente para tríceps.",steps:["Cotovelos fixos ao lado do corpo.","Empurre a corda para baixo.","Abra levemente as pontas no final.","Retorne com controle."],common:"Mexer os ombros durante a execução."},
+  {name:"Tríceps Francês",met:3.5,type:"forca",primary:"Tríceps",secondary:"Core",equipment:"Halter ou barra",difficulty:"Intermediário",muscles:["triceps","core"],desc:"Ênfase na cabeça longa do tríceps.",steps:["Peso acima da cabeça.","Flexione os cotovelos levando a carga para trás.","Estenda sem abrir os cotovelos.","Controle a amplitude."],common:"Abrir cotovelos demais ou arquear a lombar."},
+  {name:"Abdominal Prancha",met:3.8,type:"forca",primary:"Core",secondary:"Ombros, Glúteos",equipment:"Peso corporal",difficulty:"Iniciante",muscles:["core","shoulders","glutes"],desc:"Fortalece estabilização do tronco.",steps:["Apoie antebraços e pontas dos pés.","Mantenha corpo alinhado.","Contraia abdômen e glúteos.","Respire sem perder a posição."],common:"Deixar o quadril cair ou subir demais."},
+  {name:"Abdominal Crunch",met:3.3,type:"forca",primary:"Abdômen",secondary:"Core",equipment:"Peso corporal",difficulty:"Iniciante",muscles:["core"],desc:"Movimento simples para abdômen.",steps:["Deite com joelhos flexionados.","Suba o tronco contraindo o abdômen.","Não puxe o pescoço.","Desça devagar."],common:"Puxar a cabeça com as mãos."},
+  {name:"Caminhada",met:3.8,type:"cardio",primary:"Cardiorrespiratório",secondary:"Pernas e glúteos",equipment:"Livre",difficulty:"Iniciante",muscles:["quads","glutes","calves","hamstrings"],desc:"Boa para rotina diária, saúde cardiovascular e constância.",steps:["Mantenha ritmo confortável.","Use passadas naturais.","Postura ereta e respiração constante."],common:"Aumentar muito o ritmo se houver dor."},
+  {name:"Corrida leve",met:7.0,type:"cardio",primary:"Cardiorrespiratório",secondary:"Panturrilhas, Quadríceps, Glúteos",equipment:"Livre",difficulty:"Intermediário",muscles:["calves","quads","glutes","hamstrings","core"],desc:"Maior gasto calórico, ideal para quem já tem condicionamento.",steps:["Comece com aquecimento.","Mantenha passada curta e cadenciada.","Aumente volume gradualmente."],common:"Evoluir distância e velocidade ao mesmo tempo."},
+  {name:"Bicicleta Ergométrica",met:6.0,type:"cardio",primary:"Cardiorrespiratório",secondary:"Quadríceps, Glúteos, Panturrilhas",equipment:"Bike",difficulty:"Iniciante",muscles:["quads","glutes","calves","hamstrings"],desc:"Cardio de baixo impacto para joelhos.",steps:["Ajuste a altura do banco.","Pedale com cadência estável.","Mantenha tronco relaxado.","Ajuste a resistência conforme objetivo."],common:"Banco muito baixo, gerando desconforto nos joelhos."},
+  {name:"Elíptico",met:5.0,type:"cardio",primary:"Cardiorrespiratório",secondary:"Pernas, Glúteos, Ombros",equipment:"Elíptico",difficulty:"Iniciante",muscles:["quads","glutes","calves","shoulders","hamstrings"],desc:"Cardio com baixo impacto e corpo todo.",steps:["Mantenha postura ereta.","Empurre e puxe as alças com controle.","Use ritmo constante.","Aumente resistência gradualmente."],common:"Apoiar peso demais nas alças."},
+  {name:"Escada / Stair Climber",met:8.0,type:"cardio",primary:"Glúteos",secondary:"Quadríceps, Panturrilhas, Cardio",equipment:"Máquina",difficulty:"Intermediário",muscles:["glutes","quads","calves","hamstrings"],desc:"Cardio intenso com grande trabalho de pernas.",steps:["Suba com postura ereta.","Apoie levemente nas barras.","Pise com o pé inteiro quando possível.","Controle a velocidade."],common:"Ficar pendurado nos apoios e reduzir o trabalho das pernas."},
+  {name:"Natação",met:7.0,type:"cardio",primary:"Cardiorrespiratório",secondary:"Costas, Ombros, Core",equipment:"Piscina",difficulty:"Intermediário",muscles:["lats","shoulders","core","triceps"],desc:"Cardio completo e de baixo impacto.",steps:["Aqueça com ritmo leve.","Mantenha respiração coordenada.","Alterne estilos se souber.","Respeite pausas."],common:"Forçar velocidade antes de controlar a respiração."}
+];
+
+const MUSCLE_LABELS={chest:"Peitoral",upperchest:"Peitoral sup.",lats:"Dorsais",traps:"Trapézio",shoulders:"Ombros",rearshoulders:"Ombro post.",biceps:"Bíceps",triceps:"Tríceps",forearms:"Antebraços",core:"Abdômen",lowerback:"Lombar",glutes:"Glúteos",quads:"Quadríceps",hamstrings:"Posteriores",calves:"Panturrilhas"};
+function safeHtml(v){return String(v??"").replace(/[&<>'"]/g,m=>({"&":"&amp;","<":"&lt;",">":"&gt;","'":"&#39;",'"':"&quot;"}[m]));}
+function activeMuscleNames(a){return (a.muscles||[]).map(m=>MUSCLE_LABELS[m]||m).join(" • ");}
+function muscleSvg(a){
+  const active=new Set(a.muscles||[]);
+  const red=m=>active.has(m)?'#ef4444':'#d1d5db';
+  const red2=m=>active.has(m)?'#f87171':'#e5e7eb';
+  const stroke=m=>active.has(m)?'#b91c1c':'#94a3b8';
+  return `<svg viewBox="0 0 420 300" class="w-full h-56 exercise-svg" role="img" aria-label="Mapa muscular de ${safeHtml(a.name)}" xmlns="http://www.w3.org/2000/svg">
+    <rect width="420" height="300" rx="26" fill="#f8fafc"/>
+    <text x="24" y="32" font-size="15" font-weight="900" fill="#0f172a">${safeHtml(a.name)}</text>
+    <text x="24" y="52" font-size="11" fill="#64748b">Músculos destacados em vermelho</text>
+    <g transform="translate(74 36)">
+      <text x="55" y="236" font-size="10" font-weight="800" fill="#64748b" text-anchor="middle">FRENTE</text>
+      <circle cx="55" cy="38" r="18" fill="#f1f5f9" stroke="#94a3b8" stroke-width="1.5"/>
+      <path d="M38 60 Q55 52 72 60 L82 125 Q55 140 28 125Z" fill="#eef2f7" stroke="#94a3b8"/>
+      <path d="M42 68 Q55 88 68 68 Q65 98 55 113 Q45 98 42 68Z" fill="${red('chest')}" stroke="${stroke('chest')}"/>
+      <path d="M48 69 Q55 76 62 69" fill="none" stroke="${stroke('upperchest')}" stroke-width="6" stroke-linecap="round"/>
+      <path d="M35 66 C12 78 5 105 9 132" fill="none" stroke="${red('shoulders')}" stroke-width="17" stroke-linecap="round"/>
+      <path d="M75 66 C98 78 105 105 101 132" fill="none" stroke="${red('shoulders')}" stroke-width="17" stroke-linecap="round"/>
+      <path d="M10 130 C8 154 14 174 22 195" fill="none" stroke="${red('biceps')}" stroke-width="14" stroke-linecap="round"/>
+      <path d="M100 130 C102 154 96 174 88 195" fill="none" stroke="${red('biceps')}" stroke-width="14" stroke-linecap="round"/>
+      <path d="M22 192 C18 210 20 222 22 230" fill="none" stroke="${red('forearms')}" stroke-width="10" stroke-linecap="round"/>
+      <path d="M88 192 C92 210 90 222 88 230" fill="none" stroke="${red('forearms')}" stroke-width="10" stroke-linecap="round"/>
+      <path d="M47 105 Q55 126 63 105 L66 133 Q55 145 44 133Z" fill="${red('core')}" stroke="${stroke('core')}"/>
+      <ellipse cx="43" cy="145" rx="15" ry="20" fill="${red2('glutes')}" stroke="${stroke('glutes')}"/><ellipse cx="67" cy="145" rx="15" ry="20" fill="${red2('glutes')}" stroke="${stroke('glutes')}"/>
+      <path d="M40 164 C25 192 27 218 35 244" fill="none" stroke="${red('quads')}" stroke-width="20" stroke-linecap="round"/>
+      <path d="M70 164 C85 192 83 218 75 244" fill="none" stroke="${red('quads')}" stroke-width="20" stroke-linecap="round"/>
+      <path d="M35 235 C30 248 30 258 31 265" fill="none" stroke="${red('calves')}" stroke-width="12" stroke-linecap="round"/>
+      <path d="M75 235 C80 248 80 258 79 265" fill="none" stroke="${red('calves')}" stroke-width="12" stroke-linecap="round"/>
+    </g>
+    <g transform="translate(224 36)">
+      <text x="55" y="236" font-size="10" font-weight="800" fill="#64748b" text-anchor="middle">COSTAS</text>
+      <circle cx="55" cy="38" r="18" fill="#f1f5f9" stroke="#94a3b8" stroke-width="1.5"/>
+      <path d="M38 60 Q55 52 72 60 L83 128 Q55 142 27 128Z" fill="#eef2f7" stroke="#94a3b8"/>
+      <path d="M43 60 Q55 72 67 60" fill="none" stroke="${red('traps')}" stroke-width="12" stroke-linecap="round"/>
+      <path d="M34 78 C17 96 23 123 31 139" fill="none" stroke="${red('lats')}" stroke-width="18" stroke-linecap="round"/>
+      <path d="M76 78 C93 96 87 123 79 139" fill="none" stroke="${red('lats')}" stroke-width="18" stroke-linecap="round"/>
+      <path d="M47 110 Q55 127 63 110" fill="none" stroke="${red('lowerback')}" stroke-width="14" stroke-linecap="round"/>
+      <path d="M35 66 C12 78 5 105 9 132" fill="none" stroke="${red('rearshoulders')}" stroke-width="17" stroke-linecap="round"/>
+      <path d="M75 66 C98 78 105 105 101 132" fill="none" stroke="${red('rearshoulders')}" stroke-width="17" stroke-linecap="round"/>
+      <path d="M10 130 C8 154 14 174 22 195" fill="none" stroke="${red('triceps')}" stroke-width="14" stroke-linecap="round"/>
+      <path d="M100 130 C102 154 96 174 88 195" fill="none" stroke="${red('triceps')}" stroke-width="14" stroke-linecap="round"/>
+      <path d="M22 192 C18 210 20 222 22 230" fill="none" stroke="${red('forearms')}" stroke-width="10" stroke-linecap="round"/>
+      <path d="M88 192 C92 210 90 222 88 230" fill="none" stroke="${red('forearms')}" stroke-width="10" stroke-linecap="round"/>
+      <ellipse cx="43" cy="145" rx="15" ry="20" fill="${red2('glutes')}" stroke="${stroke('glutes')}"/><ellipse cx="67" cy="145" rx="15" ry="20" fill="${red2('glutes')}" stroke="${stroke('glutes')}"/>
+      <path d="M40 164 C33 193 34 220 39 246" fill="none" stroke="${red('hamstrings')}" stroke-width="18" stroke-linecap="round"/>
+      <path d="M70 164 C77 193 76 220 71 246" fill="none" stroke="${red('hamstrings')}" stroke-width="18" stroke-linecap="round"/>
+      <path d="M39 235 C34 248 34 258 35 265" fill="none" stroke="${red('calves')}" stroke-width="12" stroke-linecap="round"/>
+      <path d="M71 235 C76 248 76 258 75 265" fill="none" stroke="${red('calves')}" stroke-width="12" stroke-linecap="round"/>
+    </g>
+    <foreignObject x="24" y="238" width="372" height="46"><div xmlns="http://www.w3.org/1999/xhtml" style="font:700 11px system-ui;color:#334155;background:#fff;border:1px solid #e2e8f0;border-radius:12px;padding:8px;line-height:1.25;">${safeHtml(activeMuscleNames(a))}</div></foreignObject>
+  </svg>`;
+}
+
+let activityMonthOffset=0;
+function ensureActivities(){
+  if(!state.activities)state.activities={};
+}
+function activityDone(date){
+  ensureActivities();
+  let v=state.activities[date];
+  if(Array.isArray(v))return v.length>0;
+  if(v&&typeof v==='object')return !!v.done;
+  return !!v;
+}
+function setActivityDate(ds){
+  if(!ds)return;
+  state.date=ds;
+  if(document.getElementById("date"))date.value=ds;
+  if(!state.logs[ds])state.logs[ds]={foods:[],water:0};
+  save();
+  update();
+  renderActivityPage();
+}
+function markExercise(done,ds){
+  ensureActivities();
+  let target=ds||state.date;
+  state.activities[target]={done:!!done,updatedAt:new Date().toISOString()};
+  save();
+  renderActivityPage();
+}
+function toggleActivityDate(ds){
+  markExercise(!activityDone(ds),ds);
+}
+function deleteActivity(id){markExercise(false)}
+function renderActivityPage(){
+  ensureActivities();
+  let badge=document.getElementById("activityBadge");
+  if(badge)badge.textContent=state.date===formatLocalDate(new Date())?"Hoje":state.date;
+  let dateInput=document.getElementById("activityDate");
+  if(dateInput)dateInput.value=state.date;
+  let done=activityDone(state.date);
+  let box=document.getElementById("activityTodayBox");
+  if(box){
+    box.innerHTML=`<div class="rounded-2xl p-5 ${done?"bg-emerald-50 text-emerald-800 border border-emerald-200":"bg-gray-50 text-gray-600 border border-gray-200"}">
+      <h3 class="font-black text-lg">${done?"✅ Exercício registrado neste dia":"⚪ Sem exercício registrado neste dia"}</h3>
+      <p class="text-sm mt-1">Data: <b>${state.date}</b></p>
+    </div>`;
+  }
+  renderActivityCalendar();
+}
+function activityMonthBase(){
+  let base=new Date(state.date+"T12:00:00");
+  return new Date(base.getFullYear(),base.getMonth()+activityMonthOffset,1);
+}
+function changeActivityMonth(delta){activityMonthOffset+=delta;renderActivityCalendar()}
+function goCurrentActivityMonth(){activityMonthOffset=0;renderActivityCalendar()}
+function renderActivityCalendar(){
+  ensureActivities();
+  let cal=document.getElementById("activityCalendar");
+  if(!cal)return;
+  let base=activityMonthBase();
+  let y=base.getFullYear(),m=base.getMonth();
+  let first=new Date(y,m,1),last=new Date(y,m+1,0);
+  let title=document.getElementById("activityCalendarTitle");
+  if(title)title.textContent=base.toLocaleDateString('pt-BR',{month:'long',year:'numeric'}).replace(/^./,c=>c.toUpperCase());
+  let html="";
+  for(let i=0;i<first.getDay();i++)html+='<div></div>';
+  let count=0;
+  let today=formatLocalDate(new Date());
+  for(let d=1;d<=last.getDate();d++){
+    let ds=`${y}-${String(m+1).padStart(2,'0')}-${String(d).padStart(2,'0')}`;
+    let done=activityDone(ds);
+    if(done)count++;
+    let selected=ds===state.date;
+    let isToday=ds===today;
+    html+=`<button onclick="setActivityDate('${ds}')" ondblclick="toggleActivityDate('${ds}')" title="Clique para selecionar. Duplo clique para alternar feito/não feito." class="min-h-[62px] rounded-2xl border p-2 font-black ${done?'bg-emerald-600 text-white border-emerald-600':'bg-white text-slate-600 border-slate-200'} ${selected?'ring-2 ring-blue-400':''}">
+      <div>${d}</div>
+      <div class="text-[10px] font-bold">${done?'feito':(isToday?'hoje':'')}</div>
+    </button>`;
+  }
+  cal.innerHTML=html;
+  let sum=document.getElementById("activityMonthSummary");
+  if(sum)sum.innerHTML=`<b>${count}</b> dia${count===1?'':'s'} com exercício registrado neste mês.`;
+}
+
+const FITNESS_RECIPES=[
+  {title:"Omelete proteico com queijo minas",time:"10 min",kcal:320,protein:28,img:"https://images.unsplash.com/photo-1525351484163-7529414344d8?auto=format&fit=crop&w=900&q=80",items:["2 ovos","Queijo minas","Tomate","Orégano"],prep:"Bata os ovos, misture queijo e tomate picado. Faça em frigideira antiaderente e finalize com orégano."},
+  {title:"Iogurte com whey, fruta e aveia",time:"5 min",kcal:280,protein:30,img:"https://images.unsplash.com/photo-1511690743698-d9d85f2fbf38?auto=format&fit=crop&w=900&q=80",items:["Iogurte natural","1/2 a 1 scoop de whey","Fruta","Aveia"],prep:"Misture o whey no iogurte, acrescente fruta picada e finalize com aveia ou chia."},
+  {title:"Frango com arroz e legumes",time:"25 min",kcal:480,protein:42,img:"https://images.unsplash.com/photo-1546069901-ba9599a7e63c?auto=format&fit=crop&w=900&q=80",items:["Frango grelhado","Arroz","Brócolis","Cenoura"],prep:"Monte o prato com frango grelhado, arroz em porção controlada e legumes cozidos ou refogados."},
+  {title:"Crepioca leve de frango",time:"12 min",kcal:360,protein:34,img:"https://images.unsplash.com/photo-1528735602780-2552fd46c7af?auto=format&fit=crop&w=900&q=80",items:["Ovo","Goma de tapioca","Frango desfiado","Queijo light"],prep:"Misture ovo e tapioca, doure dos dois lados e recheie com frango desfiado."},
+  {title:"Salada completa com atum",time:"8 min",kcal:330,protein:32,img:"https://images.unsplash.com/photo-1512621776951-a57141f2eefd?auto=format&fit=crop&w=900&q=80",items:["Atum","Alface","Tomate","Ovo cozido"],prep:"Misture folhas, tomate, atum e ovo cozido. Use pouco azeite e limão."},
+  {title:"Panqueca de banana com aveia",time:"10 min",kcal:300,protein:18,img:"https://images.unsplash.com/photo-1528207776546-365bb710ee93?auto=format&fit=crop&w=900&q=80",items:["Banana","Ovo","Aveia","Canela"],prep:"Amasse a banana, misture com ovo e aveia. Doure em frigideira antiaderente."},
+  {title:"Wrap integral de frango",time:"10 min",kcal:390,protein:35,img:"https://images.unsplash.com/photo-1626700051175-6818013e1d4f?auto=format&fit=crop&w=900&q=80",items:["Wrap integral","Frango","Alface","Creme de ricota"],prep:"Recheie o wrap com frango, folhas e creme de ricota. Enrole e aqueça rapidamente."},
+  {title:"Bowl de carne magra e batata",time:"25 min",kcal:520,protein:40,img:"https://images.unsplash.com/photo-1543352634-a1c51d9f1fa7?auto=format&fit=crop&w=900&q=80",items:["Patinho moído","Batata cozida","Legumes","Salada"],prep:"Refogue o patinho, sirva com batata cozida e legumes. Ajuste a porção pela sua meta do dia."},
+  {title:"Smoothie proteico de morango",time:"5 min",kcal:260,protein:27,img:"https://images.unsplash.com/photo-1553530666-ba11a7da3888?auto=format&fit=crop&w=900&q=80",items:["Morango","Whey","Leite desnatado","Chia"],prep:"Bata tudo no liquidificador. Use gelo para deixar mais volumoso e refrescante."},
+  {title:"Cuscuz com ovos mexidos",time:"12 min",kcal:350,protein:22,img:"https://images.unsplash.com/photo-1525351484163-7529414344d8?auto=format&fit=crop&w=900&q=80",items:["Cuscuz","2 ovos","Tomate","Queijo minas"],prep:"Prepare o cuscuz, faça os ovos mexidos e sirva com tomate picado."},
+  {title:"Tilápia com purê de abóbora",time:"25 min",kcal:410,protein:38,img:"https://images.unsplash.com/photo-1546069901-ba9599a7e63c?auto=format&fit=crop&w=900&q=80",items:["Filé de peixe","Abóbora","Salada","Limão"],prep:"Grelhe o peixe e sirva com abóbora amassada e salada."},
+  {title:"Sanduíche integral de ovo",time:"8 min",kcal:340,protein:24,img:"https://images.unsplash.com/photo-1528735602780-2552fd46c7af?auto=format&fit=crop&w=900&q=80",items:["Pão integral","Ovos","Creme de ricota","Alface"],prep:"Monte o sanduíche com ovos mexidos, folhas e creme de ricota."},
+  {title:"Carne moída com legumes",time:"20 min",kcal:430,protein:36,img:"https://images.unsplash.com/photo-1543352634-a1c51d9f1fa7?auto=format&fit=crop&w=900&q=80",items:["Patinho moído","Abobrinha","Cenoura","Arroz"],prep:"Refogue a carne com legumes e acompanhe com pequena porção de arroz."},
+  {title:"Iogurte com mamão e chia",time:"5 min",kcal:240,protein:16,img:"https://images.unsplash.com/photo-1511690743698-d9d85f2fbf38?auto=format&fit=crop&w=900&q=80",items:["Iogurte","Mamão","Chia","Canela"],prep:"Misture tudo em um bowl e finalize com canela."},
+  {title:"Frango desfiado com batata doce",time:"25 min",kcal:460,protein:40,img:"https://images.unsplash.com/photo-1546069901-ba9599a7e63c?auto=format&fit=crop&w=900&q=80",items:["Frango desfiado","Batata doce","Salada","Azeite"],prep:"Cozinhe a batata, aqueça o frango e sirva com salada."},
+  {title:"Tapioca com queijo e peito de frango",time:"10 min",kcal:370,protein:30,img:"https://images.unsplash.com/photo-1528735602780-2552fd46c7af?auto=format&fit=crop&w=900&q=80",items:["Goma de tapioca","Frango","Queijo minas","Orégano"],prep:"Faça a tapioca e recheie com frango e queijo."},
+  {title:"Salada de grão-de-bico",time:"10 min",kcal:390,protein:20,img:"https://images.unsplash.com/photo-1512621776951-a57141f2eefd?auto=format&fit=crop&w=900&q=80",items:["Grão-de-bico","Tomate","Pepino","Frango ou atum"],prep:"Misture os ingredientes e tempere com limão."},
+  {title:"Ovos cozidos com torrada integral",time:"10 min",kcal:300,protein:23,img:"https://images.unsplash.com/photo-1525351484163-7529414344d8?auto=format&fit=crop&w=900&q=80",items:["2 ovos","Torrada integral","Fruta","Café"],prep:"Cozinhe os ovos e sirva com torradas e fruta."},
+  {title:"Macarrão integral com frango",time:"25 min",kcal:520,protein:42,img:"https://images.unsplash.com/photo-1543352634-a1c51d9f1fa7?auto=format&fit=crop&w=900&q=80",items:["Macarrão integral","Frango","Molho de tomate","Legumes"],prep:"Cozinhe o macarrão e misture com frango e molho simples."},
+  {title:"Queijo cottage com frutas",time:"5 min",kcal:250,protein:22,img:"https://images.unsplash.com/photo-1511690743698-d9d85f2fbf38?auto=format&fit=crop&w=900&q=80",items:["Cottage","Morango","Maçã","Chia"],prep:"Misture o cottage com frutas picadas e chia."},
+  {title:"Sopa leve de frango",time:"30 min",kcal:360,protein:34,img:"https://images.unsplash.com/photo-1546069901-ba9599a7e63c?auto=format&fit=crop&w=900&q=80",items:["Frango","Abóbora","Cenoura","Chuchu"],prep:"Cozinhe tudo e desfie o frango. Ajuste sal e temperos."},
+  {title:"Bowl de lentilha com ovo",time:"18 min",kcal:420,protein:28,img:"https://images.unsplash.com/photo-1512621776951-a57141f2eefd?auto=format&fit=crop&w=900&q=80",items:["Lentilha","Ovo","Tomate","Folhas"],prep:"Sirva lentilha cozida com ovo e salada fresca."},
+  {title:"Pão integral com ricota e frango",time:"8 min",kcal:360,protein:32,img:"https://images.unsplash.com/photo-1528735602780-2552fd46c7af?auto=format&fit=crop&w=900&q=80",items:["Pão integral","Frango","Creme de ricota","Alface"],prep:"Misture frango com creme de ricota e monte o sanduíche."},
+  {title:"Peixe com arroz e feijão",time:"25 min",kcal:500,protein:40,img:"https://images.unsplash.com/photo-1546069901-ba9599a7e63c?auto=format&fit=crop&w=900&q=80",items:["Peixe","Arroz","Feijão","Salada"],prep:"Monte um prato simples com porções controladas."},
+  {title:"Banana com whey e aveia",time:"5 min",kcal:330,protein:28,img:"https://images.unsplash.com/photo-1528207776546-365bb710ee93?auto=format&fit=crop&w=900&q=80",items:["Banana","Whey","Aveia","Canela"],prep:"Amasse a banana e misture whey, aveia e canela."},
+  {title:"Frango ao molho de iogurte",time:"20 min",kcal:390,protein:42,img:"https://images.unsplash.com/photo-1546069901-ba9599a7e63c?auto=format&fit=crop&w=900&q=80",items:["Frango","Iogurte natural","Limão","Salada"],prep:"Grelhe o frango e finalize com molho de iogurte, limão e temperos."},
+  {title:"Omelete de legumes",time:"12 min",kcal:310,protein:24,img:"https://images.unsplash.com/photo-1525351484163-7529414344d8?auto=format&fit=crop&w=900&q=80",items:["Ovos","Abobrinha","Tomate","Queijo"],prep:"Misture ovos e legumes picados e cozinhe em fogo baixo."},
+  {title:"Arroz, feijão e patinho",time:"20 min",kcal:530,protein:42,img:"https://images.unsplash.com/photo-1543352634-a1c51d9f1fa7?auto=format&fit=crop&w=900&q=80",items:["Arroz","Feijão","Patinho","Salada"],prep:"Use porção controlada de arroz e feijão com patinho refogado."},
+  {title:"Shake de café com whey",time:"5 min",kcal:220,protein:25,img:"https://images.unsplash.com/photo-1553530666-ba11a7da3888?auto=format&fit=crop&w=900&q=80",items:["Café","Whey","Leite desnatado","Gelo"],prep:"Bata tudo no liquidificador até ficar cremoso."},
+  {title:"Abobrinha recheada com frango",time:"30 min",kcal:380,protein:36,img:"https://images.unsplash.com/photo-1512621776951-a57141f2eefd?auto=format&fit=crop&w=900&q=80",items:["Abobrinha","Frango desfiado","Molho de tomate","Queijo"],prep:"Recheie a abobrinha e leve ao forno até gratinar."}
+];
+function recipeIndexSeed(){
+  let d=new Date((state.date||formatLocalDate(new Date()))+"T12:00:00");
+  let start=new Date(d.getFullYear(),0,0);
+  return Math.floor((d-start)/86400000);
+}
+function renderDailyRecipes(){
+  let box=document.getElementById("dailyRecipes"); if(!box)return;
+  let badge=document.getElementById("recipeDateBadge");
+  let selectedDate=new Date((state.date||formatLocalDate(new Date()))+"T12:00:00");
+  if(badge)badge.textContent=state.date===formatLocalDate(new Date())?"Hoje":formatShortDate(selectedDate);
+  let seed=recipeIndexSeed();
+  let start=(seed*3)%FITNESS_RECIPES.length;
+  let list=[0,1,2].map(i=>FITNESS_RECIPES[(start+i)%FITNESS_RECIPES.length]);
+  box.innerHTML=list.map(r=>`
+    <div class="card overflow-hidden">
+      <img src="${r.img}" alt="${r.title}" class="w-full h-44 object-cover" loading="lazy">
+      <div class="p-4">
+        <div class="flex justify-between gap-2 items-start">
+          <h3 class="font-black text-teal-700">${r.title}</h3>
+          <span class="pill">${r.time}</span>
+        </div>
+        <p class="text-sm text-slate-600 mt-2"><b>${r.kcal} kcal</b> • <b>${r.protein} g</b> proteína aprox.</p>
+        <p class="text-xs font-bold text-slate-500 mt-3">Ingredientes</p>
+        <p class="text-sm">${r.items.join(" • ")}</p>
+        <p class="text-xs font-bold text-slate-500 mt-3">Preparo</p>
+        <p class="text-sm text-slate-600">${r.prep}</p>
+      </div>
+    </div>
+  `).join("");
+}
+
 function promptText(){return `Você é um nutricionista especialista em análise visual de alimentos. Analise TODOS os alimentos visíveis na imagem.
 
 ESTIMATIVA DE PORÇÕES (use referências visuais):
@@ -289,9 +784,83 @@ function saveProfile(){state.apiKey=apiKey.value.trim();state.model=model.value;
 function renderProfile(){let t=targets(),wp=weightPlan();profileResult.innerHTML=`<div class="grid grid-cols-2 gap-3"><div class="bg-emerald-50 rounded-2xl p-4"><p class="text-xs font-bold">IMC ATUAL</p><p class="text-3xl font-black">${t.bmi.toFixed(1)}</p></div><div class="bg-indigo-50 rounded-2xl p-4"><p class="text-xs font-bold">META DE PESO</p><p class="text-3xl font-black">${wp.target.toFixed(1)} kg</p></div></div><div class="bg-blue-50 rounded-2xl p-4"><p>TMB: <b>${t.bmr}</b> kcal</p><p>Gasto diário: <b>${t.tdee}</b> kcal</p><p>Meta calórica: <b>${t.cal}</b> kcal</p><p>Macros: P <b>${t.protein}g</b> • C <b>${t.carb}g</b> • G <b>${t.fat}g</b></p><p>Água: <b>${t.water} ml</b></p></div><div class="bg-amber-50 rounded-2xl p-4"><p class="font-black text-amber-900">Sugestão de peso de referência</p><p>Para sua altura, a faixa de IMC considerada usualmente saudável fica aprox. entre <b>${wp.sug.min} kg</b> e <b>${wp.sug.upper} kg</b>. Como sugestão inicial, o app propõe <b>${wp.sug.upper} kg</b>, mas você pode ajustar.</p><p class="mt-2">Faltam <b>${wp.diff.toFixed(1)} kg</b> até sua meta. No ritmo cadastrado de <b>${wp.weekly.toFixed(1)} kg/semana</b>, a estimativa é de <b>${wp.weeks} semanas</b> (~${wp.months} meses).</p><p class="mini-note mt-2">Estimativa simples, não substitui acompanhamento médico/nutricional.</p></div>`;renderWeightGoalBox()}
 function renderWeightGoalBox(){let box=document.getElementById("weightGoalBox");if(!box)return;let wp=weightPlan();box.innerHTML=`<div class="metric-card"><p class="text-xs font-bold text-slate-500">PESO ATUAL</p><p class="text-2xl font-black">${wp.current.toFixed(1)} kg</p></div><div class="metric-card"><p class="text-xs font-bold text-slate-500">META</p><p class="text-2xl font-black">${wp.target.toFixed(1)} kg</p></div><div class="metric-card"><p class="text-xs font-bold text-slate-500">FALTA</p><p class="text-2xl font-black">${wp.diff.toFixed(1)} kg</p></div><div class="metric-card"><p class="text-xs font-bold text-slate-500">TEMPO EST.</p><p class="text-2xl font-black">${wp.weeks} sem.</p></div>`}
  async function testApi(){saveProfile();try{await gemini([{text:'Responda somente JSON: [{"name":"teste","grams":100,"kcal":100,"p":10,"c":10,"g":2}]'}]);alert("API funcionando.")}catch(e){alert("API falhou: "+String(e.message||e).slice(0,200))}}
-function saveWeight(){let d=weightDate.value||state.date,w=+weightValue.value;if(!w)return;state.weights=state.weights.filter(x=>x.date!==d);state.weights.push({date:d,weight:w});state.weights.sort((a,b)=>a.date.localeCompare(b.date));state.profile.weight=w;save();fillProfile();renderWeights();update()}
-function renderWeights(){weightDate.value=state.date;weightValue.value=state.profile.weight;weightList.innerHTML=state.weights.slice().reverse().map(x=>`<div class="border rounded-2xl p-3 flex justify-between"><b>${x.date}</b><span>${x.weight} kg</span></div>`).join("");renderWeightGoalBox();drawWeight()}
-function drawWeight(){let cn=weightCanvas,ctx=cn.getContext("2d"),W=cn.width,H=cn.height;ctx.clearRect(0,0,W,H);let a=state.weights;if(!a.length){ctx.fillStyle="#64748b";ctx.font="16px Arial";ctx.fillText("Cadastre seu peso para ver a evolução.",30,45);return}let vals=a.map(x=>x.weight),wp=weightPlan();vals.push(wp.target);let min=Math.min(...vals)-1,max=Math.max(...vals)+1;ctx.strokeStyle="#10b981";ctx.lineWidth=4;ctx.beginPath();a.forEach((x,i)=>{let px=40+i*((W-70)/Math.max(1,a.length-1)),py=H-30-((x.weight-min)/(max-min))*(H-60);i?ctx.lineTo(px,py):ctx.moveTo(px,py)});ctx.stroke();ctx.setLineDash([8,6]);ctx.strokeStyle="#ef4444";let y=H-30-((wp.target-min)/(max-min))*(H-60);ctx.beginPath();ctx.moveTo(40,y);ctx.lineTo(W-30,y);ctx.stroke();ctx.setLineDash([]);ctx.fillStyle="#334155";ctx.font="13px Arial";ctx.fillText("Meta: "+wp.target.toFixed(1)+" kg",45,y-8)}
+let weightChartPoints=[]; let lastDeletedWeight=null;
+function normalizeWeights(){state.weights=(state.weights||[]).map(x=>({date:x.date,weight:+x.weight})).filter(x=>x.date&&x.weight).sort((a,b)=>a.date.localeCompare(b.date));}
+function saveWeight(){
+  normalizeWeights();
+  let original=weightEditDate.value||"", d=weightDate.value||state.date, w=+weightValue.value;
+  if(!d||!w){alert("Informe a data e o peso.");return;}
+  state.weights=state.weights.filter(x=>x.date!==d && (!original || x.date!==original));
+  state.weights.push({date:d,weight:+w.toFixed(1)});
+  state.weights.sort((a,b)=>a.date.localeCompare(b.date));
+  state.profile.weight=state.weights[state.weights.length-1].weight;
+  cancelWeightEdit(false); save(); fillProfile(); renderWeights(); update();
+}
+function editWeight(date){
+  normalizeWeights(); let x=state.weights.find(w=>w.date===date); if(!x)return;
+  weightEditDate.value=x.date; weightDate.value=x.date; weightValue.value=x.weight;
+  weightSaveBtn.textContent="Atualizar peso"; cancelWeightEditBtn.classList.remove("hidden");
+  document.getElementById("peso").scrollIntoView({behavior:"smooth",block:"start"});
+}
+function cancelWeightEdit(reset=true){
+  if(!document.getElementById("weightEditDate"))return;
+  weightEditDate.value=""; weightSaveBtn.textContent="Salvar peso"; cancelWeightEditBtn.classList.add("hidden");
+  if(reset){weightDate.value=state.date; weightValue.value=state.profile.weight||"";}
+}
+function deleteWeight(date){
+  normalizeWeights(); let x=state.weights.find(w=>w.date===date); if(!x)return;
+  if(!confirm(`Excluir o registro de ${date} (${x.weight} kg)?`))return;
+  lastDeletedWeight={...x}; state.weights=state.weights.filter(w=>w.date!==date);
+  if(state.weights.length) state.profile.weight=state.weights[state.weights.length-1].weight;
+  save(); fillProfile(); renderWeights(); update(); showWeightUndo();
+}
+function duplicateWeight(date){
+  normalizeWeights(); let x=state.weights.find(w=>w.date===date); if(!x)return;
+  weightEditDate.value=""; weightDate.value=state.date; weightValue.value=x.weight;
+  weightSaveBtn.textContent="Salvar peso"; cancelWeightEditBtn.classList.remove("hidden");
+}
+function showWeightUndo(){
+  weightUndoBox.className="mt-3 bg-amber-50 border border-amber-200 text-amber-900 rounded-2xl p-3 flex justify-between items-center gap-2";
+  weightUndoBox.innerHTML=`<span>Registro excluído.</span><button onclick="undoDeleteWeight()" class="bg-amber-600 text-white rounded-xl px-3 py-2 font-black">Desfazer</button>`;
+  setTimeout(()=>{if(lastDeletedWeight){weightUndoBox.className="hidden mt-3";}},8000);
+}
+function undoDeleteWeight(){
+  if(!lastDeletedWeight)return; normalizeWeights();
+  state.weights=state.weights.filter(x=>x.date!==lastDeletedWeight.date); state.weights.push(lastDeletedWeight); state.weights.sort((a,b)=>a.date.localeCompare(b.date));
+  state.profile.weight=state.weights[state.weights.length-1].weight; lastDeletedWeight=null;
+  weightUndoBox.className="hidden mt-3"; save(); fillProfile(); renderWeights(); update();
+}
+function renderWeights(){
+  normalizeWeights(); if(!weightEditDate.value){weightDate.value=state.date; weightValue.value=state.profile.weight||"";}
+  let q=weightSearch?.value||"";
+  let arr=state.weights.slice().reverse().filter(x=>!q||x.date===q);
+  let best=state.weights.length?Math.min(...state.weights.map(x=>x.weight)):null;
+  weightList.innerHTML=arr.length?arr.map((x,idx)=>{
+    let prev=state.weights[state.weights.findIndex(w=>w.date===x.date)-1];
+    let delta=prev?+(x.weight-prev.weight).toFixed(1):0;
+    let deltaTxt=prev?`${delta>0?"+":""}${delta} kg desde a anterior`:"primeiro registro";
+    let bestTag=x.weight===best?`<span class="pill">menor peso</span>`:"";
+    return `<div class="border rounded-2xl p-3 flex justify-between items-center gap-3 bg-white"><div><div class="flex items-center gap-2 flex-wrap"><b>${x.date}</b>${bestTag}</div><p class="text-xs text-gray-500">${deltaTxt}</p></div><div class="text-right"><p class="font-black">${x.weight} kg</p><div class="flex gap-2 mt-2"><button onclick="editWeight('${x.date}')" class="bg-blue-50 text-blue-700 rounded-xl px-3 py-1 text-xs font-bold">Editar</button><button onclick="duplicateWeight('${x.date}')" class="bg-gray-100 rounded-xl px-3 py-1 text-xs font-bold">Duplicar</button><button onclick="deleteWeight('${x.date}')" class="bg-red-50 text-red-600 rounded-xl px-3 py-1 text-xs font-bold">Excluir</button></div></div></div>`
+  }).join(""):`<div class="text-center text-gray-500 bg-gray-50 rounded-2xl p-4">Nenhum registro encontrado.</div>`;
+  renderWeightGoalBox(); drawWeight();
+}
+function drawWeight(){
+  let cn=weightCanvas,ctx=cn.getContext("2d"),W=cn.width,H=cn.height;ctx.clearRect(0,0,W,H);weightChartPoints=[];normalizeWeights();let a=state.weights;
+  ctx.fillStyle="#334155";ctx.font="13px Arial";
+  if(!a.length){ctx.fillStyle="#64748b";ctx.font="16px Arial";ctx.fillText("Cadastre seu peso para ver a evolução.",30,45);return}
+  let vals=a.map(x=>x.weight),wp=weightPlan();vals.push(wp.target);let min=Math.min(...vals)-1,max=Math.max(...vals)+1;
+  let padL=55,padR=35,padT=25,padB=45,plotW=W-padL-padR,plotH=H-padT-padB;
+  ctx.strokeStyle="#e2e8f0";ctx.lineWidth=1;ctx.beginPath();for(let i=0;i<5;i++){let y=padT+i*plotH/4;ctx.moveTo(padL,y);ctx.lineTo(W-padR,y)}ctx.stroke();
+  ctx.setLineDash([8,6]);ctx.strokeStyle="#ef4444";let gy=padT+(max-wp.target)/(max-min)*plotH;ctx.beginPath();ctx.moveTo(padL,gy);ctx.lineTo(W-padR,gy);ctx.stroke();ctx.setLineDash([]);ctx.fillStyle="#991b1b";ctx.fillText("Meta: "+wp.target.toFixed(1)+" kg",padL+6,gy-8);
+  ctx.strokeStyle="#10b981";ctx.lineWidth=4;ctx.beginPath();
+  a.forEach((x,i)=>{let px=padL+i*(plotW/Math.max(1,a.length-1)),py=padT+(max-x.weight)/(max-min)*plotH;weightChartPoints.push({x:px,y:py,date:x.date});i?ctx.lineTo(px,py):ctx.moveTo(px,py)});ctx.stroke();
+  a.forEach((x,i)=>{let p=weightChartPoints[i];ctx.fillStyle="#fff";ctx.strokeStyle="#059669";ctx.lineWidth=3;ctx.beginPath();ctx.arc(p.x,p.y,7,0,Math.PI*2);ctx.fill();ctx.stroke();ctx.fillStyle="#334155";ctx.font="12px Arial";ctx.fillText(x.weight+" kg",Math.min(p.x+8,W-95),p.y-10);});
+  let last=a[a.length-1],first=a[0],lost=+(last.weight-first.weight).toFixed(1);ctx.fillStyle="#334155";ctx.font="14px Arial";ctx.fillText(`Evolução: ${lost>0?"+":""}${lost} kg desde o primeiro registro`,padL,H-16);
+}
+function weightCanvasClick(ev){
+  let r=weightCanvas.getBoundingClientRect(),x=(ev.clientX-r.left)*(weightCanvas.width/r.width),y=(ev.clientY-r.top)*(weightCanvas.height/r.height);
+  let hit=weightChartPoints.find(p=>Math.hypot(p.x-x,p.y-y)<18); if(hit)editWeight(hit.date);
+}
 
 function drawDailyCharts(){
   let mc=document.getElementById("mealChart"), xc=document.getElementById("macroChart"); if(!mc||!xc)return;
