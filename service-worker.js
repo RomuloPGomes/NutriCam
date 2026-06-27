@@ -1,4 +1,4 @@
-const CACHE_NAME = "nutricam-pwa-ios-v1";
+const CACHE_NAME = "nutricam-pwa-ios-v2";
 const FILES = [
   "./",
   "./index.html",
