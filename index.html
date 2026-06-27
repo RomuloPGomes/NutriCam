@@ -1,12 +1,13 @@
 <!doctype html><html lang="pt-BR"><head>
-<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<title>NutriCam IA - Plano Completo</title>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>NutriCam IA - Controle Completo</title>
 <script src="https://cdn.tailwindcss.com"></script>
 <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
 <style>.field-label{display:block;font-size:12px;font-weight:800;color:#64748b;margin:0 0 4px 2px}.field-help{font-size:11px;color:#64748b;margin-top:3px}.form-box{display:flex;flex-direction:column;gap:4px}.tab{display:none}.tab.active{display:block}.modal{display:none}.modal.active{display:flex}.card{background:#fff;border:1px solid #e5e7eb;border-radius:24px;box-shadow:0 6px 18px #0f172a0f}.bar{height:10px;background:#e5e7eb;border-radius:999px;overflow:hidden}.bar>div{height:100%;transition:.25s}.pill{border:1px solid #d1fae5;background:#ecfdf5;color:#047857;border-radius:999px;padding:2px 8px;font-size:11px;font-weight:700}.chart-wrap{height:260px}.mini-note{font-size:11px;color:#64748b}.qty-badge{display:inline-flex;gap:4px;align-items:center;background:#f1f5f9;border-radius:999px;padding:2px 8px;font-size:11px;font-weight:800;color:#334155}
-:root{--brand:#059669;--brand2:#0f766e;--ink:#0f172a}
+:root{--brand:#059669;--brand2:#0f766e;--ink:#0f172a;--safe-top:env(safe-area-inset-top,0px);--safe-bottom:env(safe-area-inset-bottom,0px)}
+*{box-sizing:border-box}html{min-height:100%;background:#f8fafc}body{min-height:100%;overflow-x:hidden}
 .app-bg{background:radial-gradient(circle at top left,#d1fae5 0,#f8fafc 28%,#eef2ff 100%)}
-.glass-header{background:linear-gradient(135deg,rgba(4,120,87,.96),rgba(15,118,110,.96));backdrop-filter:blur(12px)}
+.glass-header{background:linear-gradient(135deg,rgba(4,120,87,.96),rgba(15,118,110,.96));backdrop-filter:blur(12px);padding-top:calc(14px + var(--safe-top))!important}
 .card{position:relative;overflow:hidden}
 .card::before{content:"";position:absolute;inset:0 0 auto 0;height:3px;background:linear-gradient(90deg,#10b981,#14b8a6,#6366f1);opacity:.65}
 .hero-card{background:linear-gradient(135deg,#064e3b,#0f766e);color:white;border:0;box-shadow:0 20px 45px #065f4633}
@@ -16,11 +17,14 @@
 .canvas-card{background:linear-gradient(180deg,#ffffff,#f8fafc);border-radius:22px;border:1px solid #e2e8f0;box-shadow:inset 0 1px 0 #fff}
 .tip-card{border:1px solid #e2e8f0;background:linear-gradient(180deg,#fff,#f8fafc);border-radius:18px;padding:12px}
 .tip-good{background:#ecfdf5;border-color:#bbf7d0}.tip-warn{background:#fff7ed;border-color:#fed7aa}.tip-info{background:#eff6ff;border-color:#bfdbfe}
-nav{backdrop-filter:blur(14px)}
+main{padding-bottom:calc(96px + var(--safe-bottom))!important}
+input,textarea,select,button{font-size:16px}
+nav{backdrop-filter:blur(14px);padding-bottom:var(--safe-bottom)}
 nav button.nav-active{color:#059669!important;background:#ecfdf5;border-radius:18px;box-shadow:inset 0 0 0 1px #a7f3d0;transform:translateY(-2px)}
 nav button.nav-active p{font-weight:900}
 nav button.nav-active::first-line{font-size:20px}
-@media(max-width:700px){.chart-wrap{height:220px}.hero-number{font-size:34px}}
+.nutri-hero{background:linear-gradient(145deg,#064e3b,#0f766e 54%,#0d9488);color:white;border:0;box-shadow:0 22px 46px #064e3b30}.nutri-hero::before{display:none}.nutri-photo{width:168px;height:168px;border-radius:28px;object-fit:cover;box-shadow:0 18px 34px #022c2252;border:4px solid rgba(255,255,255,.75)}.nutri-chip{display:inline-flex;align-items:center;border-radius:999px;padding:6px 10px;background:rgba(255,255,255,.16);border:1px solid rgba(255,255,255,.22);font-size:12px;font-weight:900;color:#ecfdf5}.nutri-action{display:flex;align-items:center;justify-content:center;gap:8px;border-radius:18px;padding:14px 16px;font-weight:950;min-height:52px}.nutri-panel{background:#fff;border:1px solid #d1fae5;border-radius:22px;padding:16px;box-shadow:0 10px 24px #0f172a0c}.nutri-check{display:flex;gap:10px;align-items:flex-start;color:#334155;font-size:14px}.nutri-check b{color:#0f172a}
+@media(max-width:700px){.chart-wrap{height:220px}.hero-number{font-size:34px}header h1{font-size:18px!important}header p{font-size:11px!important}.card{border-radius:20px}.card.p-5{padding:18px!important}nav .grid{grid-template-columns:repeat(4,minmax(0,1fr))!important;row-gap:2px}nav button{padding-top:7px!important;padding-bottom:7px!important}nav button p{font-size:10px!important}.nutri-photo{width:136px;height:136px}.nutri-hero{text-align:center}.nutri-actions{grid-template-columns:1fr!important}}
 </style>
 
 <link rel="manifest" href="manifest.webmanifest">
@@ -30,17 +34,27 @@ nav button.nav-active::first-line{font-size:20px}
 <link rel="icon" type="image/png" sizes="192x192" href="icons/icon-192.png">
 <link rel="apple-touch-icon" href="icons/icon-192.png">
 </head><body class="app-bg text-slate-800 pb-28">
-<header class="sticky top-0 z-40 glass-header text-white p-4 shadow-lg"><div class="max-w-6xl mx-auto flex justify-between items-center gap-3"><div><h1 class="font-black text-xl leading-tight">📸 NutriCam IA</h1><p class="text-xs text-emerald-50/90 font-semibold">Diário alimentar por foto, texto e medidas caseiras</p></div><span id="dateLabel" class="bg-white/20 backdrop-blur px-3 py-1 rounded-full text-xs font-bold border border-white/20">Hoje</span></div></header>
+<header class="sticky top-0 z-40 glass-header text-white p-4 shadow-lg"><div class="max-w-6xl mx-auto flex justify-between items-center gap-3"><div><h1 class="font-black text-xl leading-tight">📸 NutriCam IA</h1><p class="text-xs text-emerald-50/90 font-semibold">Diário alimentar, hidratação, GLP-1 e acompanhamento</p></div><span id="dateLabel" class="bg-white/20 backdrop-blur px-3 py-1 rounded-full text-xs font-bold border border-white/20">Hoje</span></div></header>
 <main class="max-w-6xl mx-auto p-4 space-y-4">
-<div class="bg-yellow-50 border border-yellow-200 text-yellow-900 rounded-2xl p-3 text-sm">Plano completo carregado com refeições, opções e substituições. O app indica automaticamente se você ultrapassou a meta do dia.</div>
 <section id="diario" class="tab active space-y-4">
 <div class="grid md:grid-cols-2 gap-4">
-<div class="card p-5"><div class="flex justify-between"><div><h2 class="text-2xl font-black">Diário alimentar</h2><p class="text-gray-500">Foto, texto, manual ou plano.</p></div><div class="form-box"><label class="field-label" for="date">DATA DO DIÁRIO</label><input id="date" type="date" class="border rounded-2xl p-3" onchange="setDate(this.value)"></div></div><div id="statusBox" class="mt-4 rounded-2xl p-4 font-bold text-center"></div>
-<div class="grid grid-cols-2 gap-3 mt-4"><button onclick="pickPhoto()" class="soft-button bg-emerald-600 text-white rounded-2xl p-5 font-black">📸 Analisar foto</button><button onclick="copyDefaultPlan()" class="soft-button bg-blue-600 text-white rounded-2xl p-5 font-black">📋 Inserir plano padrão</button></div><input id="photo" type="file" accept="image/*" capture="environment" class="hidden" onchange="handlePhoto(this)">
+<div class="card p-5"><div class="flex justify-between"><div><h2 class="text-2xl font-black">Diário alimentar</h2><p class="text-gray-500">Foto, texto ou lançamento manual.</p></div><div class="form-box"><label class="field-label" for="date">DATA DO DIÁRIO</label><input id="date" type="date" class="border rounded-2xl p-3" onchange="setDate(this.value)"></div></div><div id="statusBox" class="mt-4 rounded-2xl p-4 font-bold text-center"></div>
+<div class="grid grid-cols-1 gap-3 mt-4"><button onclick="pickPhoto()" class="soft-button bg-emerald-600 text-white rounded-2xl p-5 font-black">📸 Tirar foto e analisar</button></div><input id="photo" type="file" accept="image/*" capture="environment" class="hidden" onchange="handlePhoto(this)">
 <div class="form-box mt-3"><label class="field-label" for="mealText">DESCREVA A REFEIÇÃO</label><textarea id="mealText" rows="3" class="w-full border rounded-2xl p-3" placeholder="Ex: 150g arroz, 100g feijão, 180g frango, salada e azeite"></textarea><p class="field-help">A IA separa os alimentos item por item e abre uma revisão antes de salvar.</p></div><div class="grid grid-cols-2 gap-2 mt-2"><button onclick="analyzeText()" class="bg-teal-600 text-white rounded-2xl p-3 font-bold">Analisar texto</button><button onclick="openManual()" class="bg-gray-200 rounded-2xl p-3 font-bold">Manual</button></div><div id="loading" class="hidden mt-3 bg-emerald-50 rounded-2xl p-4 text-center font-bold text-emerald-700">Analisando...</div><div id="debug" class="hidden mt-3 text-xs bg-red-50 text-red-800 rounded-xl p-3 whitespace-pre-wrap"></div></div>
 <div class="card hero-card p-5"><div class="flex justify-between items-start gap-3"><div><h2 class="font-black text-xl mb-1">Resumo do dia</h2><p class="text-xs text-emerald-50/80">Calorias restantes</p></div><span class="bg-white/15 border border-white/20 rounded-full px-3 py-1 text-xs font-black">Meta diária</span></div><p id="remaining" class="hero-number text-5xl font-black mt-2">0 kcal</p><p class="text-sm text-emerald-50/85">Meta <b id="goalCal">0</b> • Consumido <b id="usedCal">0</b></p><div class="bar mt-4"><div id="calBar" class="bg-white"></div></div><div class="grid grid-cols-3 gap-2 mt-5 text-slate-800"><div class="metric-card"><p class="text-xs font-bold text-indigo-700">PROT.</p><p id="prot" class="font-black">0/0g</p></div><div class="metric-card"><p class="text-xs font-bold text-amber-700">CARBO</p><p id="carb" class="font-black">0/0g</p></div><div class="metric-card"><p class="text-xs font-bold text-rose-700">GORD.</p><p id="fat" class="font-black">0/0g</p></div></div><div class="bg-white/15 rounded-2xl p-4 mt-5 flex justify-between border border-white/20"><div><p class="font-bold text-white">Água</p><p id="water" class="text-xl font-black">0/0 ml</p><p id="cups" class="text-xs text-emerald-50/80"></p></div><button onclick="addWater()" class="soft-button bg-white text-teal-700 rounded-xl px-4 py-2 font-black">+ copo</button></div></div>
 
 <div class="card p-5 md:col-span-2"><div class="flex justify-between items-start gap-3 flex-wrap"><div><h2 class="font-black text-xl">O que pode acrescentar hoje</h2><p class="text-sm text-gray-500">Sugestões automáticas conforme suas metas e registros do dia.</p></div><span id="suggestionBadge" class="pill">Análise do dia</span></div><div id="nutritionTips" class="grid md:grid-cols-3 gap-3 mt-4"></div></div>
+
+<div class="card p-5 md:col-span-2">
+  <div class="flex justify-between items-start gap-3 flex-wrap">
+    <div>
+      <h2 class="font-black text-xl">💧 Hidratação do dia</h2>
+      <p class="text-sm text-gray-500">Meta de água distribuída ao longo do dia, com opção de lembretes.</p>
+    </div>
+    <button onclick="requestNotificationPermission()" class="bg-emerald-100 text-emerald-800 rounded-xl px-3 py-2 font-bold text-sm">Ativar notificações</button>
+  </div>
+  <div id="hydrationPlan" class="mt-4"></div>
+</div>
 
 </div>
 <div class="card p-5">
@@ -68,10 +82,26 @@ nav button.nav-active::first-line{font-size:20px}
 </div>
 <div id="logs" class="space-y-4"></div></section>
 
-<section id="plano" class="tab space-y-4"><div class="card p-5"><h2 class="text-2xl font-black">Plano alimentar completo</h2><p class="text-sm text-gray-500">Inclui refeições principais, opções 2/SOS/3, ceia e substituições.</p><div class="grid md:grid-cols-2 gap-2 mt-3"><button onclick="copyDefaultPlan()" class="bg-blue-600 text-white rounded-2xl p-3 font-bold">Inserir plano padrão no diário</button><button onclick="showOnlySubs()" class="bg-emerald-100 text-emerald-800 rounded-2xl p-3 font-bold">Ver substituições</button></div></div><div id="planBox" class="space-y-4"></div></section>
-<section id="peso" class="tab"><div class="card p-5"><div class="flex justify-between items-start gap-3 flex-wrap"><div><h2 class="text-2xl font-black">Cadastro de peso</h2><p class="text-sm text-gray-500">Cadastre, edite ou exclua pesagens anteriores.</p></div><button id="cancelWeightEditBtn" onclick="cancelWeightEdit()" class="hidden bg-gray-100 rounded-2xl px-4 py-2 font-bold">Cancelar edição</button></div><input id="weightEditDate" type="hidden"><div class="grid md:grid-cols-3 gap-3 mt-3"><div class="form-box"><label class="field-label" for="weightDate">DATA DA PESAGEM</label><input id="weightDate" type="date" class="border rounded-2xl p-3"></div><div class="form-box"><label class="field-label" for="weightValue">PESO (kg)</label><input id="weightValue" type="number" step=".1" class="border rounded-2xl p-3" placeholder="Ex: 97.0"></div><button id="weightSaveBtn" onclick="saveWeight()" class="bg-emerald-600 text-white rounded-2xl p-3 font-black">Salvar peso</button></div><div class="form-box mt-3"><label class="field-label" for="weightSearch">BUSCAR POR DATA</label><input id="weightSearch" oninput="renderWeights()" type="date" class="border rounded-2xl p-3 max-w-xs"></div><div id="weightGoalBox" class="grid md:grid-cols-4 gap-3 mt-4"></div><canvas id="weightCanvas" width="900" height="320" onclick="weightCanvasClick(event)" class="w-full mt-5 bg-gray-50 rounded-2xl border"></canvas><p class="mini-note mt-2">Toque em um ponto do gráfico para editar a pesagem.</p><div id="weightUndoBox" class="hidden mt-3"></div><div id="weightList" class="mt-4 space-y-2"></div></div></section>
-<section id="base" class="tab"><div class="card p-5"><div class="flex justify-between"><div><h2 class="text-2xl font-black">Base de alimentos do plano</h2><p class="text-sm text-gray-500" id="foodCount"></p></div><button onclick="openFood()" class="bg-emerald-600 text-white rounded-xl px-4 py-2 font-bold">Novo</button></div><div class="form-box mt-4"><label class="field-label" for="foodSearch">PESQUISAR NA BASE</label><input id="foodSearch" oninput="renderFoods()" class="w-full border rounded-2xl p-3" placeholder="Digite arroz, frango, fruta, queijo..."></div><div id="foods" class="mt-4 max-h-[60vh] overflow-auto"></div></div></section>
-<section id="perfil" class="tab"><div class="grid md:grid-cols-2 gap-4"><div class="card p-5 space-y-3"><h2 class="text-2xl font-black">Perfil e API</h2><div class="form-box"><label class="field-label" for="apiKey">GEMINI API KEY</label><input id="apiKey" type="password" class="w-full border rounded-2xl p-3" placeholder="Cole sua chave Gemini"></div><div class="form-box"><label class="field-label" for="model">MODELO DE IA</label><select id="model" class="w-full border rounded-2xl p-3"><option value="gemini-2.5-flash">gemini-2.5-flash</option><option value="gemini-2.0-flash">gemini-2.0-flash</option><option value="gemini-1.5-flash">gemini-1.5-flash</option></select></div><div class="grid grid-cols-2 gap-3"><div class="form-box"><label class="field-label" for="pWeight">PESO ATUAL (kg)</label><input id="pWeight" type="number" class="border rounded-2xl p-3" placeholder="Ex: 97"></div><div class="form-box"><label class="field-label" for="pHeight">ALTURA (cm)</label><input id="pHeight" type="number" class="border rounded-2xl p-3" placeholder="Ex: 171"></div><div class="form-box"><label class="field-label" for="pAge">IDADE</label><input id="pAge" type="number" class="border rounded-2xl p-3" placeholder="Ex: 35"></div><div class="form-box"><label class="field-label" for="pGender">SEXO</label><select id="pGender" class="border rounded-2xl p-3"><option value="male">Masculino</option><option value="female">Feminino</option></select></div></div><div class="form-box"><label class="field-label" for="pActivity">NÍVEL DE ATIVIDADE</label><select id="pActivity" class="w-full border rounded-2xl p-3"><option value="sedentary">Sedentário</option><option value="light">Leve</option><option value="moderate">Moderado</option><option value="active">Alto</option></select></div><div class="form-box"><label class="field-label" for="pGoal">OBJETIVO</label><select id="pGoal" class="w-full border rounded-2xl p-3"><option value="maintain">Manter</option><option value="reduce">Reduzir gordura gradualmente</option><option value="gain">Ganhar massa gradualmente</option></select></div><div class="grid grid-cols-2 gap-3"><div class="form-box"><label class="field-label" for="cupSize">TAMANHO DO COPO (ml)</label><input id="cupSize" type="number" class="border rounded-2xl p-3" placeholder="Ex: 250"></div><div class="form-box"><label class="field-label" for="waterMlKg">ÁGUA POR kg (ml)</label><input id="waterMlKg" type="number" class="border rounded-2xl p-3" placeholder="Ex: 35"></div></div><div class="grid grid-cols-2 gap-3"><div class="form-box"><label class="field-label" for="targetWeight">META DE PESO (kg)</label><input id="targetWeight" type="number" step="0.1" class="border rounded-2xl p-3" placeholder="Ex: 73"></div><div class="form-box"><label class="field-label" for="weeklyLoss">RITMO ESTIMADO (kg/semana)</label><input id="weeklyLoss" type="number" step="0.1" min="0.1" max="1" class="border rounded-2xl p-3" placeholder="Ex: 0.5"></div></div><p class="field-help">A sugestão de peso usa faixa de IMC como referência geral. Ajuste a meta com acompanhamento profissional.</p><button onclick="saveProfile()" class="w-full bg-emerald-600 text-white rounded-2xl p-3 font-black">Salvar</button><button onclick="testApi()" class="w-full bg-gray-100 rounded-2xl p-3 font-black">Testar API</button>
+<section id="peso" class="tab"><div class="card p-5"><div class="flex justify-between items-start gap-3 flex-wrap"><div><h2 class="text-2xl font-black">Cadastro de peso</h2><p class="text-sm text-gray-500">Cadastre, edite ou exclua pesagens anteriores.</p></div><button id="cancelWeightEditBtn" onclick="cancelWeightEdit()" class="hidden bg-gray-100 rounded-2xl px-4 py-2 font-bold">Cancelar edição</button></div><input id="weightEditDate" type="hidden"><div class="grid md:grid-cols-3 gap-3 mt-3"><div class="form-box"><label class="field-label" for="weightDate">DATA DA PESAGEM</label><input id="weightDate" type="date" class="border rounded-2xl p-3"></div><div class="form-box"><label class="field-label" for="weightValue">PESO (kg)</label><input id="weightValue" type="number" step=".1" class="border rounded-2xl p-3" placeholder="Ex: 97.0"></div><button id="weightSaveBtn" onclick="saveWeight()" class="bg-emerald-600 text-white rounded-2xl p-3 font-black">Salvar peso</button></div><div class="form-box mt-3"><label class="field-label" for="weightSearch">BUSCAR POR DATA</label><input id="weightSearch" oninput="renderWeights()" type="date" class="border rounded-2xl p-3 max-w-xs"></div><div id="weightGoalBox" class="grid md:grid-cols-4 gap-3 mt-4"></div><canvas id="weightCanvas" width="1200" height="520" onclick="weightCanvasClick(event)" class="w-full mt-5 bg-gray-50 rounded-2xl border"></canvas><p class="mini-note mt-2">Toque em um ponto do gráfico para editar a pesagem.</p><div id="weightUndoBox" class="hidden mt-3"></div><div id="weightList" class="mt-4 space-y-2"></div></div></section>
+<section id="base" class="tab"><div class="card p-5"><div class="flex justify-between"><div><h2 class="text-2xl font-black">Base de alimentos</h2><p class="text-sm text-gray-500" id="foodCount"></p></div><button onclick="openFood()" class="bg-emerald-600 text-white rounded-xl px-4 py-2 font-bold">Novo</button></div><div class="form-box mt-4"><label class="field-label" for="foodSearch">PESQUISAR NA BASE</label><input id="foodSearch" oninput="renderFoods()" class="w-full border rounded-2xl p-3" placeholder="Digite arroz, frango, fruta, queijo..."></div><div id="foods" class="mt-4 max-h-[60vh] overflow-auto"></div></div></section>
+<section id="perfil" class="tab"><div class="grid md:grid-cols-2 gap-4"><div class="card p-5 space-y-3"><h2 class="text-2xl font-black">Perfil e API</h2><div class="form-box"><label class="field-label" for="apiKey">GEMINI API KEY</label><input id="apiKey" type="password" class="w-full border rounded-2xl p-3" placeholder="Cole aqui sua chave Gemini"></div>
+<div class="tip-card tip-info">
+  <div class="flex justify-between items-start gap-3 flex-wrap">
+    <div>
+      <h3 class="font-black text-slate-800">Como buscar e inserir a chave</h3>
+      <p class="text-sm text-slate-600 mt-1">A chave libera a análise por IA das fotos e textos das refeições.</p>
+    </div>
+    <a href="https://aistudio.google.com/app/apikey" target="_blank" rel="noopener" class="bg-blue-600 text-white rounded-2xl px-4 py-2 text-sm font-black">Abrir Google AI Studio</a>
+  </div>
+  <ol class="list-decimal ml-5 mt-3 space-y-1 text-sm text-slate-700">
+    <li>Toque em <b>Abrir Google AI Studio</b> e entre com sua conta Google.</li>
+    <li>Clique em <b>Get API key</b> ou <b>Create API key</b>.</li>
+    <li>Escolha um projeto existente ou crie um novo projeto.</li>
+    <li>Copie a chave gerada.</li>
+    <li>Volte ao NutriCam, cole a chave no campo acima, toque em <b>Salvar</b> e depois em <b>Testar API</b>.</li>
+  </ol>
+  <p class="field-help mt-3"><b>Segurança:</b> não compartilhe sua chave. Ela fica salva somente neste aparelho/navegador.</p>
+</div><div class="form-box"><label class="field-label" for="model">MODELO DE IA</label><select id="model" class="w-full border rounded-2xl p-3"><option value="gemini-2.5-flash">gemini-2.5-flash</option><option value="gemini-2.0-flash">gemini-2.0-flash</option><option value="gemini-1.5-flash">gemini-1.5-flash</option></select></div><div class="grid grid-cols-2 gap-3"><div class="form-box"><label class="field-label" for="pWeight">PESO ATUAL (kg)</label><input id="pWeight" type="number" class="border rounded-2xl p-3" placeholder="Ex: 97"></div><div class="form-box"><label class="field-label" for="pHeight">ALTURA (cm)</label><input id="pHeight" type="number" class="border rounded-2xl p-3" placeholder="Ex: 171"></div><div class="form-box"><label class="field-label" for="pAge">IDADE</label><input id="pAge" type="number" class="border rounded-2xl p-3" placeholder="Ex: 35"></div><div class="form-box"><label class="field-label" for="pGender">SEXO</label><select id="pGender" class="border rounded-2xl p-3"><option value="male">Masculino</option><option value="female">Feminino</option></select></div></div><div class="form-box"><label class="field-label" for="pActivity">NÍVEL DE ATIVIDADE</label><select id="pActivity" class="w-full border rounded-2xl p-3"><option value="sedentary">Sedentário</option><option value="light">Leve</option><option value="moderate">Moderado</option><option value="active">Alto</option></select></div><div class="form-box"><label class="field-label" for="pGoal">OBJETIVO</label><select id="pGoal" class="w-full border rounded-2xl p-3"><option value="maintain">Manter</option><option value="reduce">Reduzir gordura gradualmente</option><option value="gain">Ganhar massa gradualmente</option></select></div><div class="grid grid-cols-2 gap-3"><div class="form-box"><label class="field-label" for="cupSize">TAMANHO DO COPO (ml)</label><input id="cupSize" type="number" class="border rounded-2xl p-3" placeholder="Ex: 250"></div><div class="form-box"><label class="field-label" for="waterMlKg">ÁGUA POR kg (ml)</label><input id="waterMlKg" type="number" class="border rounded-2xl p-3" placeholder="Ex: 35"></div></div><div class="grid grid-cols-2 gap-3"><div class="form-box"><label class="field-label" for="targetWeight">META DE PESO (kg)</label><input id="targetWeight" type="number" step="0.1" class="border rounded-2xl p-3" placeholder="Ex: 73"></div><div class="form-box"><label class="field-label" for="weeklyLoss">RITMO ESTIMADO (kg/semana)</label><input id="weeklyLoss" type="number" step="0.1" min="0.1" max="1" class="border rounded-2xl p-3" placeholder="Ex: 0.5"></div></div><p class="field-help">A sugestão de peso usa faixa de IMC como referência geral. Ajuste a meta com acompanhamento profissional.</p><button onclick="saveProfile()" class="w-full bg-emerald-600 text-white rounded-2xl p-3 font-black">Salvar</button><button onclick="testApi()" class="w-full bg-gray-100 rounded-2xl p-3 font-black">Testar API</button>
 <div class="grid grid-cols-2 gap-2">
   <button onclick="exportExcelBackup()" class="w-full bg-blue-600 text-white rounded-2xl p-3 font-black">📤 Backup Excel</button>
   <button onclick="document.getElementById('backupFile').click()" class="w-full bg-blue-50 text-blue-700 rounded-2xl p-3 font-black">📥 Importar JSON</button>
@@ -124,26 +154,150 @@ nav button.nav-active::first-line{font-size:20px}
   </div>
 </section>
 
+<section id="glp1" class="tab space-y-4">
+  <div class="card p-5">
+    <div class="flex justify-between items-start gap-3 flex-wrap">
+      <div>
+        <h2 class="text-2xl font-black">Controle de aplicações GLP-1</h2>
+        <p class="text-sm text-gray-500">Registre nome da medicação, lote, data da aplicação e dose.</p>
+      </div>
+      <span id="glp1StatusBadge" class="pill">Controle pessoal</span>
+    </div>
+    <div class="bg-amber-50 border border-amber-200 text-amber-900 rounded-2xl p-3 text-sm mt-4">
+      Registro e lembrete não substituem prescrição médica. Use exatamente como orientado pelo seu médico.
+    </div>
+    <input id="glp1EditId" type="hidden">
+    <div class="grid md:grid-cols-4 gap-3 mt-4">
+      <div class="form-box"><label class="field-label" for="glp1Name">NOME DA MEDICAÇÃO</label><input id="glp1Name" list="glp1MedicationList" class="border rounded-2xl p-3" placeholder="Ex: Tirzepatida / Semaglutida"><datalist id="glp1MedicationList"></datalist></div>
+      <div class="form-box"><label class="field-label" for="glp1Lot">LOTE</label><input id="glp1Lot" class="border rounded-2xl p-3" placeholder="Ex: L12345"></div>
+      <div class="form-box"><label class="field-label" for="glp1Date">DATA DA APLICAÇÃO</label><input id="glp1Date" type="date" class="border rounded-2xl p-3"></div>
+      <div class="form-box"><label class="field-label" for="glp1Dose">DOSE</label><input id="glp1Dose" class="border rounded-2xl p-3" placeholder="Ex: 2,5 mg"></div>
+    </div>
+    <div class="flex gap-2 mt-3 flex-wrap">
+      <button id="glp1SaveBtn" onclick="saveGlp1Application()" class="bg-emerald-600 text-white rounded-2xl px-5 py-3 font-black">Salvar aplicação</button>
+      <button id="glp1CancelBtn" onclick="cancelGlp1Edit()" class="hidden bg-gray-100 rounded-2xl px-5 py-3 font-bold">Cancelar edição</button>
+    </div>
+  </div>
+
+  <div class="card p-5">
+    <div class="flex justify-between items-start gap-3 flex-wrap">
+      <div>
+        <h2 class="font-black text-xl">🔔 Lembrete de aplicação</h2>
+        <p class="text-sm text-gray-500">O app usa notificações do navegador/PWA quando estiver permitido pelo aparelho.</p>
+      </div>
+      <button onclick="requestNotificationPermission()" class="bg-emerald-100 text-emerald-800 rounded-xl px-3 py-2 font-bold text-sm">Permitir notificações</button>
+    </div>
+    <div class="grid md:grid-cols-4 gap-3 mt-4 items-end">
+      <label class="flex items-center gap-2 bg-gray-50 rounded-2xl p-3 font-bold"><input id="glp1ReminderEnabled" type="checkbox" class="w-5 h-5"> Ativar</label>
+      <div class="form-box"><label class="field-label" for="glp1ReminderDate">PRÓXIMA DATA</label><input id="glp1ReminderDate" type="date" class="border rounded-2xl p-3"></div>
+      <div class="form-box"><label class="field-label" for="glp1ReminderTime">HORÁRIO</label><input id="glp1ReminderTime" type="time" class="border rounded-2xl p-3"></div>
+      <div class="form-box"><label class="field-label" for="glp1RepeatDays">REPETIR A CADA (DIAS)</label><input id="glp1RepeatDays" type="number" min="1" value="7" class="border rounded-2xl p-3"></div>
+    </div>
+    <button onclick="saveGlp1Reminder()" class="mt-3 bg-teal-600 text-white rounded-2xl px-5 py-3 font-black">Salvar lembrete</button>
+    <div id="glp1NextBox" class="mt-4"></div>
+  </div>
+
+  <div class="card p-5">
+    <h2 class="font-black text-xl">Histórico de aplicações</h2>
+    <div id="glp1List" class="mt-4 space-y-2"></div>
+  </div>
+</section>
+
+<section id="nutricionista" class="tab space-y-4">
+  <div class="card nutri-hero p-5">
+    <div class="grid md:grid-cols-[190px,1fr] gap-5 items-center">
+      <img src="assets/nutricionista.jpg" alt="Nutricionista Bianca Xavier" class="nutri-photo mx-auto">
+      <div>
+        <span class="nutri-chip">Acompanhamento nutricional personalizado</span>
+        <h2 class="text-3xl md:text-4xl font-black mt-3 leading-tight">Bianca Xavier</h2>
+        <p class="text-emerald-50/90 mt-2 text-base">Nutricionista para emagrecimento, rotina alimentar, recomposicao corporal e suporte durante tratamento com GLP-1.</p>
+        <div class="grid grid-cols-2 md:grid-cols-4 gap-2 mt-4 text-center">
+          <div class="bg-white/14 rounded-2xl p-3 border border-white/15"><b>On-line</b><p class="text-xs text-emerald-50/80">consulta pratica</p></div>
+          <div class="bg-white/14 rounded-2xl p-3 border border-white/15"><b>Presencial</b><p class="text-xs text-emerald-50/80">atendimento local</p></div>
+          <div class="bg-white/14 rounded-2xl p-3 border border-white/15"><b>Plano</b><p class="text-xs text-emerald-50/80">sob medida</p></div>
+          <div class="bg-white/14 rounded-2xl p-3 border border-white/15"><b>Rotina</b><p class="text-xs text-emerald-50/80">sem radicalismo</p></div>
+        </div>
+        <div class="nutri-actions grid grid-cols-2 gap-3 mt-5">
+          <a href="whatsapp://send?phone=5521968232167&text=Ola%2C%20Bianca%21%20Vim%20pelo%20NutriCam%20e%20gostaria%20de%20saber%20sobre%20consulta%20nutricional." class="nutri-action bg-white text-emerald-800">WhatsApp</a>
+          <a href="https://www.instagram.com/nutribiaxavier/" class="nutri-action bg-pink-50 text-pink-700 border border-pink-100">Instagram</a>
+        </div>
+        <p class="text-emerald-50/80 text-sm mt-3 font-bold">Telefone: 21 96823-2167</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="grid md:grid-cols-3 gap-3">
+    <div class="nutri-panel">
+      <h3 class="font-black text-lg">Resultado com seguranca</h3>
+      <p class="text-sm text-slate-600 mt-2">Estrategia alimentar alinhada a sua rotina, preferencias, metas e historico.</p>
+    </div>
+    <div class="nutri-panel">
+      <h3 class="font-black text-lg">GLP-1 com acompanhamento</h3>
+      <p class="text-sm text-slate-600 mt-2">Suporte nutricional para preservar massa magra, reduzir desconfortos e melhorar adesao.</p>
+    </div>
+    <div class="nutri-panel">
+      <h3 class="font-black text-lg">Plano para o dia a dia</h3>
+      <p class="text-sm text-slate-600 mt-2">Opcoes de refeicao, substituicoes e ajustes sem transformar comida em sofrimento.</p>
+    </div>
+  </div>
+
+  <div class="card p-5">
+    <h3 class="font-black text-xl">O que alinhar na consulta</h3>
+    <div class="grid md:grid-cols-2 gap-3 mt-4">
+      <p class="nutri-check"><span>OK</span><span><b>Meta realista:</b> calorias, proteinas, agua e ritmo de evolucao.</span></p>
+      <p class="nutri-check"><span>OK</span><span><b>Cardapio flexivel:</b> trocas inteligentes para casa, trabalho e fim de semana.</span></p>
+      <p class="nutri-check"><span>OK</span><span><b>Exames e sintomas:</b> leitura do contexto para decisoes mais assertivas.</span></p>
+      <p class="nutri-check"><span>OK</span><span><b>Acompanhamento:</b> ajustes conforme fome, treino, peso e rotina.</span></p>
+    </div>
+    <a href="https://wa.me/5521968232167?text=Ola%2C%20Bianca%21%20Vim%20pelo%20NutriCam%20e%20quero%20agendar%20uma%20consulta." class="nutri-action bg-emerald-600 text-white mt-5">Agendar pelo WhatsApp</a>
+  </div>
+
+  <div class="hidden">
+    <div class="grid md:grid-cols-[220px,1fr] gap-5 items-center">
+      <img src="assets/nutricionista.jpg" alt="Nutricionista Bianca Xavier" class="w-44 h-44 rounded-3xl object-cover mx-auto shadow border">
+      <div>
+        <span class="pill">Indicação profissional</span>
+        <h2 class="text-3xl font-black mt-3">Bianca Xavier</h2>
+        <p class="text-slate-600 mt-2">Nutricionista • Atendimento presencial e on-line</p>
+        <p class="font-black text-xl mt-2">Tel: 21 96823-2167</p>
+        <div class="flex gap-2 mt-4 flex-wrap">
+          <a href="https://wa.me/5521968232167" target="_blank" rel="noopener" class="bg-emerald-600 text-white rounded-2xl px-5 py-3 font-black">Abrir WhatsApp</a>
+          <a href="https://www.instagram.com/nutribiaxavier/" target="_blank" rel="noopener" class="bg-pink-50 text-pink-700 border border-pink-100 rounded-2xl px-5 py-3 font-black">Instagram</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
 <section id="receitas" class="tab space-y-4">
   <div class="card p-5">
     <div class="flex justify-between items-start gap-3 flex-wrap">
       <div>
-        <h2 class="text-2xl font-black">Receitas fitness do dia</h2>
-        <p class="text-sm text-gray-500">Sugestões atualizadas por dia, em ciclo sem repetir receitas até acabar a lista.</p>
+        <h2 class="text-2xl font-black">Receitas por refeição</h2>
+        <p class="text-sm text-gray-500">Sugestões divididas por café da manhã, almoço e jantar, atualizadas diariamente.</p>
       </div>
       <span id="recipeDateBadge" class="pill">Hoje</span>
     </div>
-    <div id="dailyRecipes" class="grid md:grid-cols-3 gap-4 mt-4"></div>
+    <div id="dailyRecipes" class="space-y-4 mt-4"></div>
   </div>
 </section>
 
 </main>
-<nav class="fixed bottom-0 left-0 right-0 bg-white border-t shadow z-40"><div class="max-w-6xl mx-auto grid grid-cols-7 text-center"><button onclick="tab('diario')" id="nav-diario" class="py-3 text-emerald-600 font-bold">🏠<p class="text-xs">Diário</p></button><button onclick="tab('plano')" id="nav-plano" class="py-3 text-gray-400 font-bold">📋<p class="text-xs">Plano</p></button><button onclick="tab('peso')" id="nav-peso" class="py-3 text-gray-400 font-bold">⚖️<p class="text-xs">Peso</p></button><button onclick="tab('base')" id="nav-base" class="py-3 text-gray-400 font-bold">🍽️<p class="text-xs">Base</p></button><button onclick="tab('atividade')" id="nav-atividade" class="py-3 text-gray-400 font-bold">🏃<p class="text-xs">Atividade</p></button><button onclick="tab('receitas')" id="nav-receitas" class="py-3 text-gray-400 font-bold">🥗<p class="text-xs">Receitas</p></button><button onclick="tab('perfil')" id="nav-perfil" class="py-3 text-gray-400 font-bold">👤<p class="text-xs">Perfil</p></button></div></nav>
+<nav class="fixed bottom-0 left-0 right-0 bg-white border-t shadow z-40"><div class="max-w-6xl mx-auto grid grid-cols-8 text-center text-[11px]">
+<button onclick="tab('diario')" id="nav-diario" class="py-3 text-emerald-600 font-bold">🏠<p class="text-xs">Diário</p></button>
+<button onclick="tab('peso')" id="nav-peso" class="py-3 text-gray-400 font-bold">⚖️<p class="text-xs">Peso</p></button>
+<button onclick="tab('base')" id="nav-base" class="py-3 text-gray-400 font-bold">🍽️<p class="text-xs">Base</p></button>
+<button onclick="tab('atividade')" id="nav-atividade" class="py-3 text-gray-400 font-bold">🏃<p class="text-xs">Atividade</p></button>
+<button onclick="tab('glp1')" id="nav-glp1" class="py-3 text-gray-400 font-bold">💉<p class="text-xs">GLP-1</p></button>
+<button onclick="tab('receitas')" id="nav-receitas" class="py-3 text-gray-400 font-bold">🥗<p class="text-xs">Receitas</p></button>
+<button onclick="tab('nutricionista')" id="nav-nutricionista" class="py-3 text-gray-400 font-bold">👩‍⚕️<p class="text-xs">Nutri</p></button>
+<button onclick="tab('perfil')" id="nav-perfil" class="py-3 text-gray-400 font-bold">👤<p class="text-xs">Perfil</p></button>
+</div></nav>
 <div id="reviewModal" class="modal fixed inset-0 bg-black/50 z-50 items-center justify-center p-4"><div class="bg-white rounded-3xl p-5 max-w-2xl w-full max-h-[90vh] overflow-auto"><div class="flex justify-between"><h3 class="text-xl font-black">Revisar antes de salvar</h3><button onclick="closeReview()" class="text-2xl">×</button></div><div class="form-box mt-3"><label class="field-label" for="reviewMeal">SALVAR NA REFEIÇÃO</label><select id="reviewMeal" class="w-full border rounded-2xl p-3"></select></div><div id="reviewItems" class="space-y-3 mt-3"></div><div class="flex gap-2 mt-4">
 <button onclick="addReviewItem()" class="flex-1 bg-teal-50 text-teal-700 border border-teal-200 rounded-2xl p-3 font-black">+ Adicionar alimento</button>
 <button onclick="saveReview()" class="flex-1 bg-emerald-600 text-white rounded-2xl p-3 font-black">Salvar no diário</button>
 </div></div></div>
-<div id="manualModal" class="modal fixed inset-0 bg-black/50 z-50 items-center justify-center p-4"><div class="bg-white rounded-3xl p-5 max-w-lg w-full"><div class="flex justify-between"><h3 class="text-xl font-black">Adicionar manual</h3><button onclick="closeManual()" class="text-2xl">×</button></div><div class="form-box mt-3"><label class="field-label" for="manualMeal">REFEIÇÃO</label><select id="manualMeal" class="w-full border rounded-2xl p-3"></select></div><div class="form-box mt-2"><label class="field-label" for="manualSearch">PESQUISAR ALIMENTO</label><input id="manualSearch" oninput="renderManual()" class="w-full border rounded-2xl p-3" placeholder="Digite o alimento"></div><div class="grid grid-cols-2 gap-2 mt-2"><div class="form-box"><label class="field-label" for="manualQty">QUANTIDADE</label><input id="manualQty" oninput="renderManual()" type="number" step="0.5" value="1" class="w-full border rounded-2xl p-3" placeholder="Ex: 2"></div><div class="form-box"><label class="field-label" for="manualUnit">MEDIDA</label><select id="manualUnit" onchange="renderManual()" class="w-full border rounded-2xl p-3"><option value="portion">medida do plano</option><option value="g">gramas</option><option value="unit">unidade</option><option value="slice">fatia</option><option value="tbsp">colher de sopa</option><option value="tsp">colher de chá</option><option value="cup">xícara/copo</option><option value="scoop">medidor</option></select></div></div><p class="field-help">O app converte para gramas automaticamente, mas mostra a medida caseira no diário.</p><div id="manualList" class="mt-3 max-h-72 overflow-auto"></div></div></div>
+<div id="manualModal" class="modal fixed inset-0 bg-black/50 z-50 items-center justify-center p-4"><div class="bg-white rounded-3xl p-5 max-w-lg w-full"><div class="flex justify-between"><h3 class="text-xl font-black">Adicionar manual</h3><button onclick="closeManual()" class="text-2xl">×</button></div><div class="form-box mt-3"><label class="field-label" for="manualMeal">REFEIÇÃO</label><select id="manualMeal" class="w-full border rounded-2xl p-3"></select></div><div class="form-box mt-2"><label class="field-label" for="manualSearch">PESQUISAR ALIMENTO</label><input id="manualSearch" oninput="renderManual()" class="w-full border rounded-2xl p-3" placeholder="Digite o alimento"></div><div class="grid grid-cols-2 gap-2 mt-2"><div class="form-box"><label class="field-label" for="manualQty">QUANTIDADE</label><input id="manualQty" oninput="renderManual()" type="number" step="0.5" value="1" class="w-full border rounded-2xl p-3" placeholder="Ex: 2"></div><div class="form-box"><label class="field-label" for="manualUnit">MEDIDA</label><select id="manualUnit" onchange="renderManual()" class="w-full border rounded-2xl p-3"><option value="portion">medida padrão</option><option value="g">gramas</option><option value="unit">unidade</option><option value="slice">fatia</option><option value="tbsp">colher de sopa</option><option value="tsp">colher de chá</option><option value="cup">xícara/copo</option><option value="scoop">medidor</option></select></div></div><p class="field-help">O app converte para gramas automaticamente, mas mostra a medida caseira no diário.</p><div id="manualList" class="mt-3 max-h-72 overflow-auto"></div></div></div>
 <div id="foodModal" class="modal fixed inset-0 bg-black/50 z-50 items-center justify-center p-4"><div class="bg-white rounded-3xl p-5 max-w-lg w-full"><div class="flex justify-between"><h3 class="text-xl font-black">Alimento</h3><button onclick="closeFood()" class="text-2xl">×</button></div><input id="fId" type="hidden">
 <div class="form-box mt-3"><label class="field-label" for="fName">NOME DO ALIMENTO</label><input id="fName" class="w-full border rounded-2xl p-3" placeholder="Ex: Arroz branco cozido"></div>
 <div class="grid grid-cols-2 gap-2 mt-2">
@@ -154,7 +308,7 @@ nav button.nav-active::first-line{font-size:20px}
 </div><button onclick="saveFood()" class="w-full bg-emerald-600 text-white rounded-2xl p-3 font-black mt-3">Salvar</button></div></div>
 <script>
 const SECTIONS=[{"id": "cafe", "time": "07:30", "name": "Café-da-manhã", "type": "principal", "items": [{"name": "Pão de forma integral", "qty": "2 fatias", "grams": 50}, {"name": "Ovo de galinha mexido", "qty": "2 unidades médias", "grams": 90}, {"name": "Creme de ricota", "qty": "1 colher de sopa", "grams": 20}, {"name": "Mamão papaia", "qty": "1 unidade pequena", "grams": 270}, {"name": "Semente de chia", "qty": "1 colher de chá cheia", "grams": 6}, {"name": "Psyllium", "qty": "1 colher de sobremesa", "grams": 4}, {"name": "Café coado suave", "qty": "1 xícara chá", "grams": 200}], "subs": {"Pão de forma integral": [{"name": "Goma de tapioca", "qty": "3 colheres de sopa cheias", "grams": 60}, {"name": "Torrada integral", "qty": "3 unidades", "grams": 30}, {"name": "Pão francês", "qty": "1 unidade", "grams": 50}, {"name": "Cuscuz de milho cozido com sal", "qty": "100 g", "grams": 100}], "Creme de ricota": [{"name": "Queijo cottage 1% gordura", "qty": "1 fatia", "grams": 37}, {"name": "Queijo minas", "qty": "1 fatia pequena", "grams": 20}, {"name": "Requeijão light", "qty": "1 colher de sobremesa", "grams": 23}, {"name": "Queijo muçarela", "qty": "1 fatia média", "grams": 20}]}}, {"id": "crepioca", "time": "07:30", "name": "Lanche: Opção 2 - Crepioca", "type": "opcao", "items": [{"name": "Ovo de galinha", "qty": "1 unidade média", "grams": 50}, {"name": "Goma de tapioca", "qty": "1 colher de sopa rasa", "grams": 15}, {"name": "Semente de chia", "qty": "1 colher de sopa cheia", "grams": 15}, {"name": "Queijo muçarela", "qty": "1 fatia média", "grams": 20}, {"name": "Fruta com fibras", "qty": "1 porção", "grams": 200}], "subs": {"Semente de chia": [{"name": "Semente de linhaça", "qty": "1 colher sobremesa cheia", "grams": 10}, {"name": "Semente de girassol", "qty": "1 colher de sobremesa rasa", "grams": 10}, {"name": "Semente de abóbora", "qty": "1 colher de sopa rasa", "grams": 15}], "Queijo muçarela": [{"name": "Queijo cottage", "qty": "1,5 fatia", "grams": 55.5}, {"name": "Creme de ricota", "qty": "1 colher de sopa", "grams": 20}, {"name": "Queijo minas frescal", "qty": "1 fatia média", "grams": 30}]}}, {"id": "sos", "time": "07:30", "name": "Lanche: Opção SOS", "type": "opcao", "items": [{"name": "Whey protein concentrado", "qty": "1 medidor", "grams": 30}, {"name": "Leite de vaca desnatado UHT", "qty": "1 copo americano duplo", "grams": 240}, {"name": "Torrada integral", "qty": "3 unidades", "grams": 30}, {"name": "Fruta com fibras", "qty": "1 porção", "grams": 200}], "subs": {}}, {"id": "colacao", "time": "10:00", "name": "Colação", "type": "principal", "items": [{"name": "Fruta", "qty": "1 unidade grande", "grams": 200}], "subs": {}}, {"id": "almoco", "time": "13:00", "name": "Almoço", "type": "principal", "items": [{"name": "Filé de frango grelhado", "qty": "120 g", "grams": 120}, {"name": "Arroz branco cozido", "qty": "2,5 colheres de arroz cheias", "grams": 112.5}, {"name": "Feijão preto cozido", "qty": "2 colheres servir cheias", "grams": 70}, {"name": "Abóbora cozida", "qty": "2 pedaços médios", "grams": 100}, {"name": "Tomate", "qty": "à vontade", "grams": 80}, {"name": "Pepino", "qty": "à vontade", "grams": 80}, {"name": "Alface americana", "qty": "à vontade", "grams": 50}, {"name": "Azeite de oliva extravirgem", "qty": "1 colher de chá", "grams": 2}], "subs": {"Filé de frango grelhado": [{"name": "Patinho moído refogado", "qty": "100 g", "grams": 100}, {"name": "Sobrecoxa de frango sem pele assada", "qty": "1,5 unidade média", "grams": 97.5}, {"name": "Coxa de frango assada sem pele", "qty": "2 unidades médias", "grams": 100}, {"name": "Coxa de frango sem pele cozida", "qty": "1 unidade grande", "grams": 110}, {"name": "Peito de frango sem pele cozido", "qty": "1 filé grande", "grams": 170}, {"name": "Filé de peixe grelhado ou assado", "qty": "1 filé grande", "grams": 155}, {"name": "Filé de peixe cozido", "qty": "1 filé grande", "grams": 155}], "Arroz branco cozido": [{"name": "Batata inglesa cozida", "qty": "6 colheres servir rasas", "grams": 240}, {"name": "Batata doce cozida", "qty": "3 fatias médias", "grams": 210}, {"name": "Batata baroa cozida", "qty": "4 colheres de arroz cheias picada", "grams": 220}, {"name": "Mandioca cozida", "qty": "1,5 pedaço médio", "grams": 150}], "Feijão preto cozido": [{"name": "Feijão carioca cozido", "qty": "2 colheres servir cheias", "grams": 70}, {"name": "Feijão verde cozido", "qty": "2 colheres de servir", "grams": 96}, {"name": "Feijão vermelho cozido", "qty": "1 colher servir cheia", "grams": 35}, {"name": "Lentilha cozida", "qty": "2 colheres de sopa cheias", "grams": 54}, {"name": "Grão de bico cozido", "qty": "1 colher de servir cheia", "grams": 55}], "Abóbora cozida": [{"name": "Abobrinha italiana cozida sem sal", "qty": "à vontade", "grams": 150}, {"name": "Cenoura cozida", "qty": "à vontade", "grams": 150}, {"name": "Beterraba cozida", "qty": "à vontade", "grams": 150}, {"name": "Berinjela cozida", "qty": "4 colheres servir cheias", "grams": 300}, {"name": "Nabo cozido", "qty": "à vontade", "grams": 150}, {"name": "Chuchu refogado", "qty": "à vontade", "grams": 150}, {"name": "Brócolis refogado", "qty": "2 escumadeiras", "grams": 120}, {"name": "Couve-flor refogada", "qty": "2 ramos médios", "grams": 120}], "Tomate": [{"name": "Tomate cereja", "qty": "à vontade", "grams": 80}, {"name": "Cebola branca", "qty": "à vontade", "grams": 50}, {"name": "Pimentão amarelo", "qty": "à vontade", "grams": 80}, {"name": "Pimentão verde", "qty": "à vontade", "grams": 80}], "Pepino": [{"name": "Cenoura crua", "qty": "à vontade", "grams": 100}, {"name": "Beterraba", "qty": "à vontade", "grams": 100}], "Alface americana": [{"name": "Acelga", "qty": "à vontade", "grams": 60}, {"name": "Agrião", "qty": "à vontade", "grams": 60}, {"name": "Rúcula", "qty": "à vontade", "grams": 60}, {"name": "Repolho cru", "qty": "à vontade", "grams": 80}, {"name": "Chicória", "qty": "à vontade", "grams": 60}]}}, {"id": "lanche", "time": "15:30", "name": "Lanche", "type": "principal", "items": [{"name": "Iogurte natural", "qty": "1 unidade", "grams": 100}, {"name": "Whey protein concentrado", "qty": "1/2 medidor", "grams": 15}, {"name": "Farelo de aveia", "qty": "2 colheres de sopa", "grams": 20}, {"name": "Fruta", "qty": "1 unidade grande", "grams": 55}], "subs": {"Farelo de aveia": [{"name": "Granola sem açúcar", "qty": "1 colher de sobremesa", "grams": 10}], "Fruta": [{"name": "Mamão", "qty": "1/2 unidade média", "grams": 155}, {"name": "Maçã Argentina", "qty": "1 unidade pequena", "grams": 80}, {"name": "Morango", "qty": "10 unidades grandes", "grams": 200}, {"name": "Uva", "qty": "1 cacho pequeno", "grams": 170}, {"name": "Abacaxi", "qty": "2 fatias médias", "grams": 150}]}}, {"id": "panqueca", "time": "15:30", "name": "Lanche: Opção 2 - Panqueca de banana", "type": "opcao", "items": [{"name": "Banana", "qty": "1 unidade média", "grams": 40}, {"name": "Farelo de aveia", "qty": "1 colher de sopa", "grams": 10}, {"name": "Ovo de galinha", "qty": "1 unidade média", "grams": 50}, {"name": "Canela em pó", "qty": "1 colher café rasa", "grams": 1}, {"name": "Morango", "qty": "1 unidade média", "grams": 12}, {"name": "Mel de abelha", "qty": "1 colher café rasa", "grams": 2}, {"name": "Café coado suave", "qty": "1 xícara chá", "grams": 200}], "subs": {}}, {"id": "lanche3", "time": "15:30", "name": "Lanche: Opção 3", "type": "opcao", "items": [{"name": "Pão de forma integral", "qty": "1 fatia", "grams": 25}, {"name": "Ovo de galinha mexido", "qty": "1 unidade média", "grams": 50}, {"name": "Creme de ricota", "qty": "1 colher de sopa", "grams": 20}, {"name": "Café coado suave", "qty": "1 xícara chá", "grams": 200}], "subs": {"Pão de forma integral": [{"name": "Torrada integral", "qty": "2 unidades", "grams": 20}], "Creme de ricota": [{"name": "Queijo minas", "qty": "1 fatia média", "grams": 30}, {"name": "Requeijão light", "qty": "1 colher de sobremesa", "grams": 23}, {"name": "Queijo muçarela", "qty": "1 fatia média", "grams": 20}]}}, {"id": "jantar", "time": "20:00", "name": "Jantar", "type": "principal", "cloneSubsFrom": "almoco", "items": [{"name": "Filé de frango grelhado", "qty": "120 g", "grams": 120}, {"name": "Arroz branco cozido", "qty": "2,5 colheres de arroz cheias", "grams": 112.5}, {"name": "Feijão preto cozido", "qty": "2 colheres servir cheias", "grams": 70}, {"name": "Abóbora cozida", "qty": "2 pedaços médios", "grams": 100}, {"name": "Tomate", "qty": "à vontade", "grams": 80}, {"name": "Pepino", "qty": "à vontade", "grams": 80}, {"name": "Alface americana", "qty": "à vontade", "grams": 50}, {"name": "Azeite de oliva extravirgem", "qty": "1 colher de chá", "grams": 2}], "subs": {"Filé de frango grelhado": [{"name": "Patinho moído refogado", "qty": "100 g", "grams": 100}, {"name": "Sobrecoxa de frango sem pele assada", "qty": "1,5 unidade média", "grams": 97.5}, {"name": "Coxa de frango assada sem pele", "qty": "2 unidades médias", "grams": 100}, {"name": "Coxa de frango sem pele cozida", "qty": "1 unidade grande", "grams": 110}, {"name": "Peito de frango sem pele cozido", "qty": "1 filé grande", "grams": 170}, {"name": "Filé de peixe grelhado ou assado", "qty": "1 filé grande", "grams": 155}, {"name": "Filé de peixe cozido", "qty": "1 filé grande", "grams": 155}], "Arroz branco cozido": [{"name": "Batata inglesa cozida", "qty": "6 colheres servir rasas", "grams": 240}, {"name": "Batata doce cozida", "qty": "3 fatias médias", "grams": 210}, {"name": "Batata baroa cozida", "qty": "4 colheres de arroz cheias picada", "grams": 220}, {"name": "Mandioca cozida", "qty": "1,5 pedaço médio", "grams": 150}], "Feijão preto cozido": [{"name": "Feijão carioca cozido", "qty": "2 colheres servir cheias", "grams": 70}, {"name": "Feijão verde cozido", "qty": "2 colheres de servir", "grams": 96}, {"name": "Feijão vermelho cozido", "qty": "1 colher servir cheia", "grams": 35}, {"name": "Lentilha cozida", "qty": "2 colheres de sopa cheias", "grams": 54}, {"name": "Grão de bico cozido", "qty": "1 colher de servir cheia", "grams": 55}], "Abóbora cozida": [{"name": "Abobrinha italiana cozida sem sal", "qty": "à vontade", "grams": 150}, {"name": "Cenoura cozida", "qty": "à vontade", "grams": 150}, {"name": "Beterraba cozida", "qty": "à vontade", "grams": 150}, {"name": "Berinjela cozida", "qty": "4 colheres servir cheias", "grams": 300}, {"name": "Nabo cozido", "qty": "à vontade", "grams": 150}, {"name": "Chuchu refogado", "qty": "à vontade", "grams": 150}, {"name": "Brócolis refogado", "qty": "2 escumadeiras", "grams": 120}, {"name": "Couve-flor refogada", "qty": "2 ramos médios", "grams": 120}], "Tomate": [{"name": "Tomate cereja", "qty": "à vontade", "grams": 80}, {"name": "Cebola branca", "qty": "à vontade", "grams": 50}, {"name": "Pimentão amarelo", "qty": "à vontade", "grams": 80}, {"name": "Pimentão verde", "qty": "à vontade", "grams": 80}], "Pepino": [{"name": "Cenoura crua", "qty": "à vontade", "grams": 100}, {"name": "Beterraba", "qty": "à vontade", "grams": 100}], "Alface americana": [{"name": "Acelga", "qty": "à vontade", "grams": 60}, {"name": "Agrião", "qty": "à vontade", "grams": 60}, {"name": "Rúcula", "qty": "à vontade", "grams": 60}, {"name": "Repolho cru", "qty": "à vontade", "grams": 80}, {"name": "Chicória", "qty": "à vontade", "grams": 60}]}}, {"id": "ceia", "time": "22:00", "name": "Ceia: Hora de relaxar", "type": "principal", "items": [{"name": "Fruta", "qty": "1 unidade grande", "grams": 55}], "subs": {}}]; const START_FOODS=[{"id": "f1", "name": "Abacaxi", "grams": 100, "kcal": 50, "p": 0.5, "c": 13.1, "g": 0.1}, {"id": "f2", "name": "Abobrinha italiana cozida sem sal", "grams": 100, "kcal": 20, "p": 1.2, "c": 3.5, "g": 0.2}, {"id": "f3", "name": "Abóbora cozida", "grams": 100, "kcal": 48, "p": 1.4, "c": 10.8, "g": 0.1}, {"id": "f4", "name": "Acelga", "grams": 100, "kcal": 19, "p": 1.8, "c": 3.7, "g": 0.2}, {"id": "f5", "name": "Agrião", "grams": 100, "kcal": 11, "p": 2.3, "c": 1.3, "g": 0.1}, {"id": "f6", "name": "Alface americana", "grams": 100, "kcal": 14, "p": 0.9, "c": 2.9, "g": 0.1}, {"id": "f7", "name": "Arroz branco cozido", "grams": 100, "kcal": 128, "p": 2.5, "c": 28.1, "g": 0.2}, {"id": "f8", "name": "Azeite de oliva extravirgem", "grams": 100, "kcal": 884, "p": 0, "c": 0, "g": 100}, {"id": "f9", "name": "Banana", "grams": 100, "kcal": 98, "p": 1.3, "c": 26, "g": 0.1}, {"id": "f10", "name": "Batata baroa cozida", "grams": 100, "kcal": 80, "p": 1, "c": 18.9, "g": 0.2}, {"id": "f11", "name": "Batata doce cozida", "grams": 100, "kcal": 77, "p": 0.6, "c": 18.4, "g": 0.1}, {"id": "f12", "name": "Batata inglesa cozida", "grams": 100, "kcal": 52, "p": 1.2, "c": 11.9, "g": 0}, {"id": "f13", "name": "Berinjela cozida", "grams": 100, "kcal": 35, "p": 0.8, "c": 8.7, "g": 0.2}, {"id": "f14", "name": "Beterraba", "grams": 100, "kcal": 43, "p": 1.6, "c": 9.6, "g": 0.2}, {"id": "f15", "name": "Beterraba cozida", "grams": 100, "kcal": 44, "p": 1.7, "c": 10, "g": 0.2}, {"id": "f16", "name": "Brócolis refogado", "grams": 100, "kcal": 55, "p": 3.5, "c": 7, "g": 2}, {"id": "f17", "name": "Café coado suave", "grams": 100, "kcal": 2, "p": 0.1, "c": 0, "g": 0}, {"id": "f18", "name": "Canela em pó", "grams": 100, "kcal": 247, "p": 4, "c": 81, "g": 1.2}, {"id": "f19", "name": "Cebola branca", "grams": 100, "kcal": 40, "p": 1.1, "c": 9.3, "g": 0.1}, {"id": "f20", "name": "Cenoura cozida", "grams": 100, "kcal": 35, "p": 0.8, "c": 8.2, "g": 0.2}, {"id": "f21", "name": "Cenoura crua", "grams": 100, "kcal": 41, "p": 0.9, "c": 9.6, "g": 0.2}, {"id": "f22", "name": "Chicória", "grams": 100, "kcal": 23, "p": 1.7, "c": 4.7, "g": 0.3}, {"id": "f23", "name": "Chuchu refogado", "grams": 100, "kcal": 30, "p": 0.8, "c": 5.5, "g": 1.2}, {"id": "f24", "name": "Couve-flor refogada", "grams": 100, "kcal": 45, "p": 2, "c": 5, "g": 2.5}, {"id": "f25", "name": "Coxa de frango assada sem pele", "grams": 100, "kcal": 180, "p": 28, "c": 0, "g": 8}, {"id": "f26", "name": "Coxa de frango sem pele cozida", "grams": 100, "kcal": 170, "p": 27, "c": 0, "g": 7}, {"id": "f27", "name": "Creme de ricota", "grams": 100, "kcal": 174, "p": 8, "c": 4, "g": 13}, {"id": "f28", "name": "Cuscuz de milho cozido com sal", "grams": 100, "kcal": 112, "p": 2.2, "c": 25.3, "g": 0.7}, {"id": "f29", "name": "Farelo de aveia", "grams": 100, "kcal": 246, "p": 17, "c": 66, "g": 7}, {"id": "f30", "name": "Feijão carioca cozido", "grams": 100, "kcal": 76, "p": 4.8, "c": 13.6, "g": 0.5}, {"id": "f31", "name": "Feijão preto cozido", "grams": 100, "kcal": 77, "p": 4.5, "c": 14, "g": 0.5}, {"id": "f32", "name": "Feijão verde cozido", "grams": 100, "kcal": 60, "p": 4, "c": 11, "g": 0.3}, {"id": "f33", "name": "Feijão vermelho cozido", "grams": 100, "kcal": 85, "p": 5.2, "c": 15.3, "g": 0.5}, {"id": "f34", "name": "Filé de frango grelhado", "grams": 100, "kcal": 165, "p": 31, "c": 0, "g": 3.6}, {"id": "f35", "name": "Filé de peixe cozido", "grams": 100, "kcal": 110, "p": 24, "c": 0, "g": 1.5}, {"id": "f36", "name": "Filé de peixe grelhado ou assado", "grams": 100, "kcal": 128, "p": 26, "c": 0, "g": 2.7}, {"id": "f37", "name": "Fruta", "grams": 100, "kcal": 60, "p": 0.8, "c": 15, "g": 0.2}, {"id": "f38", "name": "Fruta com fibras", "grams": 100, "kcal": 60, "p": 0.8, "c": 15, "g": 0.2}, {"id": "f39", "name": "Goma de tapioca", "grams": 100, "kcal": 240, "p": 0.6, "c": 59, "g": 0}, {"id": "f40", "name": "Granola sem açúcar", "grams": 100, "kcal": 430, "p": 10, "c": 60, "g": 15}, {"id": "f41", "name": "Grão de bico cozido", "grams": 100, "kcal": 164, "p": 8.9, "c": 27.4, "g": 2.6}, {"id": "f42", "name": "Iogurte natural", "grams": 100, "kcal": 61, "p": 3.5, "c": 4.7, "g": 3.3}, {"id": "f43", "name": "Leite de vaca desnatado UHT", "grams": 100, "kcal": 35, "p": 3.4, "c": 5, "g": 0.1}, {"id": "f44", "name": "Lentilha cozida", "grams": 100, "kcal": 93, "p": 6.3, "c": 16.3, "g": 0.5}, {"id": "f45", "name": "Mamão", "grams": 100, "kcal": 45, "p": 0.8, "c": 11.6, "g": 0.1}, {"id": "f46", "name": "Mamão papaia", "grams": 100, "kcal": 45, "p": 0.8, "c": 11.6, "g": 0.1}, {"id": "f47", "name": "Mandioca cozida", "grams": 100, "kcal": 125, "p": 0.6, "c": 30.1, "g": 0.3}, {"id": "f48", "name": "Maçã Argentina", "grams": 100, "kcal": 56, "p": 0.3, "c": 15.2, "g": 0.2}, {"id": "f49", "name": "Mel de abelha", "grams": 100, "kcal": 304, "p": 0.3, "c": 82.4, "g": 0}, {"id": "f50", "name": "Morango", "grams": 100, "kcal": 32, "p": 0.7, "c": 7.7, "g": 0.3}, {"id": "f51", "name": "Nabo cozido", "grams": 100, "kcal": 22, "p": 0.7, "c": 5.1, "g": 0.1}, {"id": "f52", "name": "Ovo de galinha", "grams": 100, "kcal": 155, "p": 13, "c": 1.1, "g": 10.6}, {"id": "f53", "name": "Ovo de galinha mexido", "grams": 100, "kcal": 155, "p": 13, "c": 1.1, "g": 10.6}, {"id": "f54", "name": "Patinho moído refogado", "grams": 100, "kcal": 212, "p": 30, "c": 0, "g": 8.5}, {"id": "f55", "name": "Peito de frango sem pele cozido", "grams": 100, "kcal": 163, "p": 31, "c": 0, "g": 3.2}, {"id": "f56", "name": "Pepino", "grams": 100, "kcal": 15, "p": 0.7, "c": 3.6, "g": 0.1}, {"id": "f57", "name": "Pimentão amarelo", "grams": 100, "kcal": 27, "p": 1, "c": 6.3, "g": 0.2}, {"id": "f58", "name": "Pimentão verde", "grams": 100, "kcal": 20, "p": 0.9, "c": 4.6, "g": 0.2}, {"id": "f59", "name": "Psyllium", "grams": 100, "kcal": 200, "p": 0, "c": 88, "g": 0}, {"id": "f60", "name": "Pão de forma integral", "grams": 100, "kcal": 253, "p": 9.4, "c": 43, "g": 3.7}, {"id": "f61", "name": "Pão francês", "grams": 100, "kcal": 300, "p": 8, "c": 58.6, "g": 3.1}, {"id": "f62", "name": "Queijo cottage", "grams": 100, "kcal": 98, "p": 11.1, "c": 3.4, "g": 4.3}, {"id": "f63", "name": "Queijo cottage 1% gordura", "grams": 100, "kcal": 72, "p": 12.4, "c": 2.7, "g": 1}, {"id": "f64", "name": "Queijo minas", "grams": 100, "kcal": 264, "p": 17.4, "c": 3.2, "g": 20.2}, {"id": "f65", "name": "Queijo minas frescal", "grams": 100, "kcal": 264, "p": 17.4, "c": 3.2, "g": 20.2}, {"id": "f66", "name": "Queijo muçarela", "grams": 100, "kcal": 300, "p": 22, "c": 2.2, "g": 22}, {"id": "f67", "name": "Repolho cru", "grams": 100, "kcal": 25, "p": 1.3, "c": 5.8, "g": 0.1}, {"id": "f68", "name": "Requeijão light", "grams": 100, "kcal": 180, "p": 9, "c": 5, "g": 13}, {"id": "f69", "name": "Rúcula", "grams": 100, "kcal": 25, "p": 2.6, "c": 3.7, "g": 0.7}, {"id": "f70", "name": "Semente de abóbora", "grams": 100, "kcal": 559, "p": 30.2, "c": 10.7, "g": 49}, {"id": "f71", "name": "Semente de chia", "grams": 100, "kcal": 486, "p": 16.5, "c": 42.1, "g": 30.7}, {"id": "f72", "name": "Semente de girassol", "grams": 100, "kcal": 584, "p": 20.8, "c": 20, "g": 51.5}, {"id": "f73", "name": "Semente de linhaça", "grams": 100, "kcal": 534, "p": 18.3, "c": 28.9, "g": 42.2}, {"id": "f74", "name": "Sobrecoxa de frango sem pele assada", "grams": 100, "kcal": 215, "p": 27, "c": 0, "g": 11}, {"id": "f75", "name": "Tomate", "grams": 100, "kcal": 18, "p": 0.9, "c": 3.9, "g": 0.2}, {"id": "f76", "name": "Tomate cereja", "grams": 100, "kcal": 18, "p": 0.9, "c": 3.9, "g": 0.2}, {"id": "f77", "name": "Torrada integral", "grams": 100, "kcal": 360, "p": 10, "c": 68, "g": 4}, {"id": "f78", "name": "Uva", "grams": 100, "kcal": 69, "p": 0.7, "c": 18.1, "g": 0.2}, {"id": "f79", "name": "Whey protein concentrado", "grams": 100, "kcal": 400, "p": 80, "c": 8, "g": 6}]; let review=[]; let filterSubs=false; let weekOffset=0;
-let state={date:new Date().toISOString().slice(0,10),apiKey:"",model:"gemini-2.5-flash",profile:{weight:97,height:171,age:35,gender:"male",activity:"moderate",goal:"reduce",cup:250,waterMlKg:35,targetWeight:73,weeklyLoss:0.5},logs:{},weights:[],foods:START_FOODS};
+let state={date:new Date().toISOString().slice(0,10),apiKey:"",model:"gemini-2.5-flash",profile:{weight:97,height:171,age:35,gender:"male",activity:"moderate",goal:"reduce",cup:250,waterMlKg:35,targetWeight:73,weeklyLoss:0.5},logs:{},weights:[],foods:START_FOODS,glp1:{applications:[],reminder:{enabled:false,date:"",time:"08:00",repeatDays:7}},notifications:{waterEnabled:false,waterStart:"08:00",waterEnd:"21:00",last:{}}};
 const DEFAULT_UNIT_GRAMS={g:1,unit:50,slice:25,tbsp:15,tsp:5,cup:200,scoop:30,portion:100};
 const UNIT_LABEL={g:"g",base:"porção atual",unit:"unid.",slice:"fatia",tbsp:"colher sopa",tsp:"colher chá",cup:"xícara/copo",scoop:"medidor",portion:"medida"};
 const PORTION_BY_FOOD={"Pão de forma integral":{unit:"slice",grams:25,label:"fatia"},"Pão francês":{unit:"unit",grams:50,label:"unidade"},"Ovo de galinha":{unit:"unit",grams:50,label:"unidade"},"Ovo de galinha mexido":{unit:"unit",grams:50,label:"unidade"},"Queijo minas":{unit:"slice",grams:30,label:"fatia"},"Queijo minas frescal":{unit:"slice",grams:30,label:"fatia"},"Queijo muçarela":{unit:"slice",grams:20,label:"fatia"},"Creme de ricota":{unit:"tbsp",grams:20,label:"colher sopa"},"Ricota":{unit:"tsp",grams:10,label:"colher chá"},"Requeijão light":{unit:"tbsp",grams:23,label:"colher sobremesa"},"Café coado suave":{unit:"cup",grams:200,label:"xícara"},"Leite de vaca desnatado UHT":{unit:"cup",grams:240,label:"copo"},"Whey protein concentrado":{unit:"scoop",grams:30,label:"medidor"},"Goma de tapioca":{unit:"tbsp",grams:15,label:"colher sopa"},"Torrada integral":{unit:"unit",grams:10,label:"unidade"},"Semente de chia":{unit:"tsp",grams:6,label:"colher chá"},"Farelo de aveia":{unit:"tbsp",grams:10,label:"colher sopa"},"Arroz branco cozido":{unit:"tbsp",grams:45,label:"colher cheia"},"Feijão preto cozido":{unit:"tbsp",grams:35,label:"colher servir"},"Azeite de oliva extravirgem":{unit:"tsp",grams:2,label:"colher chá"}};
@@ -166,9 +320,9 @@ function measureLabel(food,qty,unit,grams){if(unit==="g")return `${grams} g`;if(
 function withMeasure(item,food,qty,unit){let grams=item.grams;return {...item,qty:+qty||1,unit:unit||"g",measure:measureLabel(food,+qty||1,unit||"g",grams),servingGrams:food.servingGrams||food._og||food.grams||grams}}
 window.onload=()=>{let s=localStorage.getItem("nutricam_full_plan_v2"); if(s) state=JSON.parse(s); init();}
 function uid(){return Date.now().toString(36)+Math.random().toString(36).slice(2,8)} function save(){localStorage.setItem("nutricam_full_plan_v2",JSON.stringify(state))}
-function sectionNames(){return SECTIONS.map(s=>s.name)} function init(){ensureProfileDefaults();let todayLocal=formatLocalDate(new Date());if(!state.logs[todayLocal])state.logs[todayLocal]={foods:[],water:0};state.date=todayLocal;if(!state.logs[state.date])state.logs[state.date]={foods:[],water:0};["reviewMeal","manualMeal"].forEach(id=>document.getElementById(id).innerHTML=sectionNames().map(m=>`<option>${m}</option>`).join(""));date.value=state.date;fillProfile();renderPlan();renderFoods();update();tab("diario")}
-function tab(id){document.querySelectorAll(".tab").forEach(x=>x.classList.remove("active"));document.getElementById(id).classList.add("active");document.querySelectorAll("nav button").forEach(b=>{b.classList.add("text-gray-400");b.classList.remove("text-emerald-600","nav-active")});let active=document.getElementById("nav-"+id);active.classList.remove("text-gray-400");active.classList.add("text-emerald-600","nav-active");if(id==="peso")renderWeights();if(id==="perfil")renderProfile();if(id==="plano")renderPlan();if(id==="atividade")renderActivityPage();if(id==="receitas")renderDailyRecipes()}
-function setDate(d){state.date=d;if(!state.logs[d])state.logs[d]={foods:[],water:0};save();update();if(document.getElementById("atividade")?.classList.contains("active"))renderActivityPage()}
+function sectionNames(){return SECTIONS.map(s=>s.name)} function init(){ensureAppDefaults();ensureProfileDefaults();let todayLocal=formatLocalDate(new Date());if(!state.logs[todayLocal])state.logs[todayLocal]={foods:[],water:0};state.date=todayLocal;if(!state.logs[state.date])state.logs[state.date]={foods:[],water:0};["reviewMeal","manualMeal"].forEach(id=>document.getElementById(id).innerHTML=sectionNames().map(m=>`<option>${m}</option>`).join(""));date.value=state.date;fillProfile();renderFoods();update();scheduleNotificationChecks();tab("diario")}
+function tab(id){document.querySelectorAll(".tab").forEach(x=>x.classList.remove("active"));document.getElementById(id).classList.add("active");document.querySelectorAll("nav button").forEach(b=>{b.classList.add("text-gray-400");b.classList.remove("text-emerald-600","nav-active")});let active=document.getElementById("nav-"+id);active.classList.remove("text-gray-400");active.classList.add("text-emerald-600","nav-active");if(id==="peso")renderWeights();if(id==="perfil")renderProfile();if(id==="atividade")renderActivityPage();if(id==="glp1")renderGlp1Page();if(id==="receitas")renderDailyRecipes();if(id==="nutricionista"){}}
+function setDate(d){d=parseDisplayDate(d);if(!d)return;state.date=d;if(!state.logs[d])state.logs[d]={foods:[],water:0};date.value=d;save();update();if(document.getElementById("atividade")?.classList.contains("active"))renderActivityPage()}
 function targets(){
   let p=state.profile;
   let peso=Number(p.weight||97);
@@ -212,12 +366,14 @@ function targets(){
   }
 }
 function totals(){return state.logs[state.date].foods.reduce((a,f)=>({cal:a.cal+f.kcal,p:a.p+f.p,c:a.c+f.c,g:a.g+f.g}),{cal:0,p:0,c:0,g:0})}
-function update(){let t=targets(),x=totals(),l=state.logs[state.date],over=x.cal>t.cal;dateLabel.textContent=state.date===new Date().toISOString().slice(0,10)?"Hoje":state.date;goalCal.textContent=t.cal;usedCal.textContent=Math.round(x.cal);remaining.textContent=Math.round(t.cal-x.cal)+" kcal";calBar.style.width=Math.min(100,x.cal/t.cal*100)+"%";prot.textContent=`${Math.round(x.p)}/${t.protein}g`;carb.textContent=`${Math.round(x.c)}/${t.carb}g`;fat.textContent=`${Math.round(x.g)}/${t.fat}g`;water.textContent=`${l.water}/${t.water} ml`;cups.textContent=`${Math.round(l.water/state.profile.cup)} copos de ${state.profile.cup} ml`;statusBox.className="mt-4 rounded-2xl p-4 font-bold text-center "+(over?"bg-red-50 text-red-700":"bg-emerald-50 text-emerald-700");statusBox.innerHTML=over?`⚠️ Você ultrapassou a meta em <b>${Math.round(x.cal-t.cal)} kcal</b>`:`✅ Dentro da meta. Ainda restam <b>${Math.round(t.cal-x.cal)} kcal</b>`;renderWeeklySummary();renderLogs();renderSuggestions();if(document.getElementById("atividade")?.classList.contains("active"))renderActivityPage();if(document.getElementById("receitas")?.classList.contains("active"))renderDailyRecipes()}
+function update(){let t=targets(),x=totals(),l=state.logs[state.date],over=x.cal>t.cal;dateLabel.textContent=state.date===formatLocalDate(new Date())?`Hoje • ${formatDisplayDate(state.date)}`:formatDisplayDate(state.date);date.value=state.date;goalCal.textContent=t.cal;usedCal.textContent=Math.round(x.cal);remaining.textContent=Math.round(t.cal-x.cal)+" kcal";calBar.style.width=Math.min(100,x.cal/t.cal*100)+"%";prot.textContent=`${Math.round(x.p)}/${t.protein}g`;carb.textContent=`${Math.round(x.c)}/${t.carb}g`;fat.textContent=`${Math.round(x.g)}/${t.fat}g`;water.textContent=`${l.water}/${t.water} ml`;cups.textContent=`${Math.round(l.water/state.profile.cup)} copos de ${state.profile.cup} ml`;statusBox.className="mt-4 rounded-2xl p-4 font-bold text-center "+(over?"bg-red-50 text-red-700":"bg-emerald-50 text-emerald-700");statusBox.innerHTML=over?`⚠️ Você ultrapassou a meta em <b>${Math.round(x.cal-t.cal)} kcal</b>`:`✅ Dentro da meta. Ainda restam <b>${Math.round(t.cal-x.cal)} kcal</b>`;renderWeeklySummary();renderLogs();renderSuggestions();renderHydrationPlan();if(document.getElementById("atividade")?.classList.contains("active"))renderActivityPage();if(document.getElementById("glp1")?.classList.contains("active"))renderGlp1Page();if(document.getElementById("receitas")?.classList.contains("active"))renderDailyRecipes()}
 function mealOfLog(f){return f.meal||"Outros"}
 
 function parseLocalDate(str){let [y,m,d]=str.split("-").map(Number);return new Date(y,m-1,d)}
 function formatLocalDate(dt){let y=dt.getFullYear(),m=String(dt.getMonth()+1).padStart(2,"0"),d=String(dt.getDate()).padStart(2,"0");return `${y}-${m}-${d}`}
-function formatShortDate(dt){return `${String(dt.getDate()).padStart(2,"0")}/${String(dt.getMonth()+1).padStart(2,"0")}`}
+function formatDisplayDate(value){if(!value)return"";if(value instanceof Date)return `${String(value.getDate()).padStart(2,"0")}-${String(value.getMonth()+1).padStart(2,"0")}-${value.getFullYear()}`;let s=String(value);let m=s.match(/^(\d{4})-(\d{2})-(\d{2})$/);return m?`${m[3]}-${m[2]}-${m[1]}`:s.replaceAll("/","-")}
+function parseDisplayDate(value){let s=String(value||"").trim();if(!s)return"";let m=s.match(/^(\d{2})[-\/](\d{2})[-\/](\d{4})$/);if(m)return`${m[3]}-${m[2]}-${m[1]}`;return s}
+function formatShortDate(dt){return formatDisplayDate(dt)}
 function startOfWeek(dt){let d=new Date(dt),day=d.getDay();d.setDate(d.getDate()-((day+6)%7));d.setHours(0,0,0,0);return d}
 function dayTotal(dateStr){let log=state.logs[dateStr];if(!log||!log.foods)return 0;return log.foods.reduce((s,f)=>s+Number(f.kcal||0),0)}
 function changeWeek(delta){weekOffset+=delta;renderWeeklySummary()}
@@ -345,7 +501,7 @@ function delLog(id){state.logs[state.date].foods=state.logs[state.date].foods.fi
 function calcFoodByName(name,grams){let f=findFoodByName(name)||{name,grams:100,kcal:60,p:.8,c:15,g:.2};return scale(f,grams)}
 function scale(f,grams){let k=grams/(f.grams||100);return{name:f.name,grams,kcal:Math.round(f.kcal*k),p:+(f.p*k).toFixed(1),c:+(f.c*k).toFixed(1),g:+(f.g*k).toFixed(1)}}
 function addWater(){state.logs[state.date].water+=state.profile.cup;save();update()}
-function renderPlan(){let c=planBox;c.innerHTML="";let foodSet=new Set();SECTIONS.forEach(sec=>{sec.items.forEach(i=>foodSet.add(i.name));Object.values(sec.subs||{}).flat().forEach(i=>foodSet.add(i.name));});foodCount&&(foodCount.textContent=`${foodSet.size} alimentos/opções do plano carregados.`);SECTIONS.forEach(sec=>{if(filterSubs && !Object.keys(sec.subs||{}).length)return;let total=sec.items.reduce((s,i)=>s+calcFoodByName(i.name,i.grams).kcal,0);let h=`<div class="card p-5"><div class="flex justify-between gap-2"><div><span class="pill">${sec.time}</span> <span class="pill">${sec.type}</span><h3 class="font-black text-teal-700 mt-2">${sec.name}</h3></div><b>${Math.round(total)} kcal</b></div><button onclick="copySection('${sec.id}')" class="mt-3 bg-blue-50 text-blue-700 rounded-xl px-3 py-2 font-bold text-sm">Lançar esta refeição</button>`;h+=`<div class="mt-3"><b>Itens:</b>`;sec.items.forEach((it,idx)=>{let v=calcFoodByName(it.name,it.grams);h+=`<div class="border-t py-2 text-sm flex justify-between"><span>${it.name} • ${it.qty} (${it.grams}g)</span><span>${v.kcal} kcal <button class="text-blue-600 ml-2" onclick="addPlanItem('${sec.id}',${idx})">lançar</button></span></div>`});h+=`</div>`;if(Object.keys(sec.subs||{}).length){h+=`<details class="mt-3"><summary class="font-bold cursor-pointer">Substituições</summary>`;Object.entries(sec.subs).forEach(([base,arr])=>{h+=`<div class="mt-2 bg-gray-50 rounded-2xl p-3"><b>Trocar ${base} por:</b>`;arr.forEach((it,i)=>{let v=calcFoodByName(it.name,it.grams);h+=`<div class="border-t py-2 text-sm flex justify-between"><span>${it.name} • ${it.qty} (${it.grams}g)</span><span>${v.kcal} kcal <button class="text-emerald-700 ml-2" onclick="addSubItem('${sec.id}','${base.replaceAll("'","\\'")}',${i})">usar</button></span></div>`});h+=`</div>`});h+=`</details>`}c.innerHTML+=h+"</div>"})}
+function renderPlan(){let c=document.getElementById("planBox"); if(!c)return; c.innerHTML="";let foodSet=new Set();SECTIONS.forEach(sec=>{sec.items.forEach(i=>foodSet.add(i.name));Object.values(sec.subs||{}).flat().forEach(i=>foodSet.add(i.name));});foodCount&&(foodCount.textContent=`${foodSet.size} alimentos/opções do plano carregados.`);SECTIONS.forEach(sec=>{if(filterSubs && !Object.keys(sec.subs||{}).length)return;let total=sec.items.reduce((s,i)=>s+calcFoodByName(i.name,i.grams).kcal,0);let h=`<div class="card p-5"><div class="flex justify-between gap-2"><div><span class="pill">${sec.time}</span> <span class="pill">${sec.type}</span><h3 class="font-black text-teal-700 mt-2">${sec.name}</h3></div><b>${Math.round(total)} kcal</b></div><button onclick="copySection('${sec.id}')" class="mt-3 bg-blue-50 text-blue-700 rounded-xl px-3 py-2 font-bold text-sm">Lançar esta refeição</button>`;h+=`<div class="mt-3"><b>Itens:</b>`;sec.items.forEach((it,idx)=>{let v=calcFoodByName(it.name,it.grams);h+=`<div class="border-t py-2 text-sm flex justify-between"><span>${it.name} • ${it.qty} (${it.grams}g)</span><span>${v.kcal} kcal <button class="text-blue-600 ml-2" onclick="addPlanItem('${sec.id}',${idx})">lançar</button></span></div>`});h+=`</div>`;if(Object.keys(sec.subs||{}).length){h+=`<details class="mt-3"><summary class="font-bold cursor-pointer">Substituições</summary>`;Object.entries(sec.subs).forEach(([base,arr])=>{h+=`<div class="mt-2 bg-gray-50 rounded-2xl p-3"><b>Trocar ${base} por:</b>`;arr.forEach((it,i)=>{let v=calcFoodByName(it.name,it.grams);h+=`<div class="border-t py-2 text-sm flex justify-between"><span>${it.name} • ${it.qty} (${it.grams}g)</span><span>${v.kcal} kcal <button class="text-emerald-700 ml-2" onclick="addSubItem('${sec.id}','${base.replaceAll("'","\\'")}',${i})">usar</button></span></div>`});h+=`</div>`});h+=`</details>`}c.innerHTML+=h+"</div>"})}
 function showOnlySubs(){filterSubs=!filterSubs;renderPlan()}
 function copyDefaultPlan(){["cafe","colacao","almoco","lanche","jantar","ceia"].forEach(id=>copySection(id,false));save();update();tab("diario")}
 function getSection(id){return SECTIONS.find(s=>s.id===id)}
@@ -571,7 +727,7 @@ function deleteActivity(id){markExercise(false)}
 function renderActivityPage(){
   ensureActivities();
   let badge=document.getElementById("activityBadge");
-  if(badge)badge.textContent=state.date===formatLocalDate(new Date())?"Hoje":state.date;
+  if(badge)badge.textContent=state.date===formatLocalDate(new Date())?`Hoje • ${formatDisplayDate(state.date)}`:formatDisplayDate(state.date);
   let dateInput=document.getElementById("activityDate");
   if(dateInput)dateInput.value=state.date;
   let done=activityDone(state.date);
@@ -579,7 +735,7 @@ function renderActivityPage(){
   if(box){
     box.innerHTML=`<div class="rounded-2xl p-5 ${done?"bg-emerald-50 text-emerald-800 border border-emerald-200":"bg-gray-50 text-gray-600 border border-gray-200"}">
       <h3 class="font-black text-lg">${done?"✅ Exercício registrado neste dia":"⚪ Sem exercício registrado neste dia"}</h3>
-      <p class="text-sm mt-1">Data: <b>${state.date}</b></p>
+      <p class="text-sm mt-1">Data: <b>${formatDisplayDate(state.date)}</b></p>
     </div>`;
   }
   renderActivityCalendar();
@@ -619,67 +775,223 @@ function renderActivityCalendar(){
   if(sum)sum.innerHTML=`<b>${count}</b> dia${count===1?'':'s'} com exercício registrado neste mês.`;
 }
 
-const FITNESS_RECIPES=[
-  {title:"Omelete proteico com queijo minas",time:"10 min",kcal:320,protein:28,img:"https://images.unsplash.com/photo-1525351484163-7529414344d8?auto=format&fit=crop&w=900&q=80",items:["2 ovos","Queijo minas","Tomate","Orégano"],prep:"Bata os ovos, misture queijo e tomate picado. Faça em frigideira antiaderente e finalize com orégano."},
-  {title:"Iogurte com whey, fruta e aveia",time:"5 min",kcal:280,protein:30,img:"https://images.unsplash.com/photo-1511690743698-d9d85f2fbf38?auto=format&fit=crop&w=900&q=80",items:["Iogurte natural","1/2 a 1 scoop de whey","Fruta","Aveia"],prep:"Misture o whey no iogurte, acrescente fruta picada e finalize com aveia ou chia."},
-  {title:"Frango com arroz e legumes",time:"25 min",kcal:480,protein:42,img:"https://images.unsplash.com/photo-1546069901-ba9599a7e63c?auto=format&fit=crop&w=900&q=80",items:["Frango grelhado","Arroz","Brócolis","Cenoura"],prep:"Monte o prato com frango grelhado, arroz em porção controlada e legumes cozidos ou refogados."},
-  {title:"Crepioca leve de frango",time:"12 min",kcal:360,protein:34,img:"https://images.unsplash.com/photo-1528735602780-2552fd46c7af?auto=format&fit=crop&w=900&q=80",items:["Ovo","Goma de tapioca","Frango desfiado","Queijo light"],prep:"Misture ovo e tapioca, doure dos dois lados e recheie com frango desfiado."},
-  {title:"Salada completa com atum",time:"8 min",kcal:330,protein:32,img:"https://images.unsplash.com/photo-1512621776951-a57141f2eefd?auto=format&fit=crop&w=900&q=80",items:["Atum","Alface","Tomate","Ovo cozido"],prep:"Misture folhas, tomate, atum e ovo cozido. Use pouco azeite e limão."},
-  {title:"Panqueca de banana com aveia",time:"10 min",kcal:300,protein:18,img:"https://images.unsplash.com/photo-1528207776546-365bb710ee93?auto=format&fit=crop&w=900&q=80",items:["Banana","Ovo","Aveia","Canela"],prep:"Amasse a banana, misture com ovo e aveia. Doure em frigideira antiaderente."},
-  {title:"Wrap integral de frango",time:"10 min",kcal:390,protein:35,img:"https://images.unsplash.com/photo-1626700051175-6818013e1d4f?auto=format&fit=crop&w=900&q=80",items:["Wrap integral","Frango","Alface","Creme de ricota"],prep:"Recheie o wrap com frango, folhas e creme de ricota. Enrole e aqueça rapidamente."},
-  {title:"Bowl de carne magra e batata",time:"25 min",kcal:520,protein:40,img:"https://images.unsplash.com/photo-1543352634-a1c51d9f1fa7?auto=format&fit=crop&w=900&q=80",items:["Patinho moído","Batata cozida","Legumes","Salada"],prep:"Refogue o patinho, sirva com batata cozida e legumes. Ajuste a porção pela sua meta do dia."},
-  {title:"Smoothie proteico de morango",time:"5 min",kcal:260,protein:27,img:"https://images.unsplash.com/photo-1553530666-ba11a7da3888?auto=format&fit=crop&w=900&q=80",items:["Morango","Whey","Leite desnatado","Chia"],prep:"Bata tudo no liquidificador. Use gelo para deixar mais volumoso e refrescante."},
-  {title:"Cuscuz com ovos mexidos",time:"12 min",kcal:350,protein:22,img:"https://images.unsplash.com/photo-1525351484163-7529414344d8?auto=format&fit=crop&w=900&q=80",items:["Cuscuz","2 ovos","Tomate","Queijo minas"],prep:"Prepare o cuscuz, faça os ovos mexidos e sirva com tomate picado."},
-  {title:"Tilápia com purê de abóbora",time:"25 min",kcal:410,protein:38,img:"https://images.unsplash.com/photo-1546069901-ba9599a7e63c?auto=format&fit=crop&w=900&q=80",items:["Filé de peixe","Abóbora","Salada","Limão"],prep:"Grelhe o peixe e sirva com abóbora amassada e salada."},
-  {title:"Sanduíche integral de ovo",time:"8 min",kcal:340,protein:24,img:"https://images.unsplash.com/photo-1528735602780-2552fd46c7af?auto=format&fit=crop&w=900&q=80",items:["Pão integral","Ovos","Creme de ricota","Alface"],prep:"Monte o sanduíche com ovos mexidos, folhas e creme de ricota."},
-  {title:"Carne moída com legumes",time:"20 min",kcal:430,protein:36,img:"https://images.unsplash.com/photo-1543352634-a1c51d9f1fa7?auto=format&fit=crop&w=900&q=80",items:["Patinho moído","Abobrinha","Cenoura","Arroz"],prep:"Refogue a carne com legumes e acompanhe com pequena porção de arroz."},
-  {title:"Iogurte com mamão e chia",time:"5 min",kcal:240,protein:16,img:"https://images.unsplash.com/photo-1511690743698-d9d85f2fbf38?auto=format&fit=crop&w=900&q=80",items:["Iogurte","Mamão","Chia","Canela"],prep:"Misture tudo em um bowl e finalize com canela."},
-  {title:"Frango desfiado com batata doce",time:"25 min",kcal:460,protein:40,img:"https://images.unsplash.com/photo-1546069901-ba9599a7e63c?auto=format&fit=crop&w=900&q=80",items:["Frango desfiado","Batata doce","Salada","Azeite"],prep:"Cozinhe a batata, aqueça o frango e sirva com salada."},
-  {title:"Tapioca com queijo e peito de frango",time:"10 min",kcal:370,protein:30,img:"https://images.unsplash.com/photo-1528735602780-2552fd46c7af?auto=format&fit=crop&w=900&q=80",items:["Goma de tapioca","Frango","Queijo minas","Orégano"],prep:"Faça a tapioca e recheie com frango e queijo."},
-  {title:"Salada de grão-de-bico",time:"10 min",kcal:390,protein:20,img:"https://images.unsplash.com/photo-1512621776951-a57141f2eefd?auto=format&fit=crop&w=900&q=80",items:["Grão-de-bico","Tomate","Pepino","Frango ou atum"],prep:"Misture os ingredientes e tempere com limão."},
-  {title:"Ovos cozidos com torrada integral",time:"10 min",kcal:300,protein:23,img:"https://images.unsplash.com/photo-1525351484163-7529414344d8?auto=format&fit=crop&w=900&q=80",items:["2 ovos","Torrada integral","Fruta","Café"],prep:"Cozinhe os ovos e sirva com torradas e fruta."},
-  {title:"Macarrão integral com frango",time:"25 min",kcal:520,protein:42,img:"https://images.unsplash.com/photo-1543352634-a1c51d9f1fa7?auto=format&fit=crop&w=900&q=80",items:["Macarrão integral","Frango","Molho de tomate","Legumes"],prep:"Cozinhe o macarrão e misture com frango e molho simples."},
-  {title:"Queijo cottage com frutas",time:"5 min",kcal:250,protein:22,img:"https://images.unsplash.com/photo-1511690743698-d9d85f2fbf38?auto=format&fit=crop&w=900&q=80",items:["Cottage","Morango","Maçã","Chia"],prep:"Misture o cottage com frutas picadas e chia."},
-  {title:"Sopa leve de frango",time:"30 min",kcal:360,protein:34,img:"https://images.unsplash.com/photo-1546069901-ba9599a7e63c?auto=format&fit=crop&w=900&q=80",items:["Frango","Abóbora","Cenoura","Chuchu"],prep:"Cozinhe tudo e desfie o frango. Ajuste sal e temperos."},
-  {title:"Bowl de lentilha com ovo",time:"18 min",kcal:420,protein:28,img:"https://images.unsplash.com/photo-1512621776951-a57141f2eefd?auto=format&fit=crop&w=900&q=80",items:["Lentilha","Ovo","Tomate","Folhas"],prep:"Sirva lentilha cozida com ovo e salada fresca."},
-  {title:"Pão integral com ricota e frango",time:"8 min",kcal:360,protein:32,img:"https://images.unsplash.com/photo-1528735602780-2552fd46c7af?auto=format&fit=crop&w=900&q=80",items:["Pão integral","Frango","Creme de ricota","Alface"],prep:"Misture frango com creme de ricota e monte o sanduíche."},
-  {title:"Peixe com arroz e feijão",time:"25 min",kcal:500,protein:40,img:"https://images.unsplash.com/photo-1546069901-ba9599a7e63c?auto=format&fit=crop&w=900&q=80",items:["Peixe","Arroz","Feijão","Salada"],prep:"Monte um prato simples com porções controladas."},
-  {title:"Banana com whey e aveia",time:"5 min",kcal:330,protein:28,img:"https://images.unsplash.com/photo-1528207776546-365bb710ee93?auto=format&fit=crop&w=900&q=80",items:["Banana","Whey","Aveia","Canela"],prep:"Amasse a banana e misture whey, aveia e canela."},
-  {title:"Frango ao molho de iogurte",time:"20 min",kcal:390,protein:42,img:"https://images.unsplash.com/photo-1546069901-ba9599a7e63c?auto=format&fit=crop&w=900&q=80",items:["Frango","Iogurte natural","Limão","Salada"],prep:"Grelhe o frango e finalize com molho de iogurte, limão e temperos."},
-  {title:"Omelete de legumes",time:"12 min",kcal:310,protein:24,img:"https://images.unsplash.com/photo-1525351484163-7529414344d8?auto=format&fit=crop&w=900&q=80",items:["Ovos","Abobrinha","Tomate","Queijo"],prep:"Misture ovos e legumes picados e cozinhe em fogo baixo."},
-  {title:"Arroz, feijão e patinho",time:"20 min",kcal:530,protein:42,img:"https://images.unsplash.com/photo-1543352634-a1c51d9f1fa7?auto=format&fit=crop&w=900&q=80",items:["Arroz","Feijão","Patinho","Salada"],prep:"Use porção controlada de arroz e feijão com patinho refogado."},
-  {title:"Shake de café com whey",time:"5 min",kcal:220,protein:25,img:"https://images.unsplash.com/photo-1553530666-ba11a7da3888?auto=format&fit=crop&w=900&q=80",items:["Café","Whey","Leite desnatado","Gelo"],prep:"Bata tudo no liquidificador até ficar cremoso."},
-  {title:"Abobrinha recheada com frango",time:"30 min",kcal:380,protein:36,img:"https://images.unsplash.com/photo-1512621776951-a57141f2eefd?auto=format&fit=crop&w=900&q=80",items:["Abobrinha","Frango desfiado","Molho de tomate","Queijo"],prep:"Recheie a abobrinha e leve ao forno até gratinar."}
-];
+const RECIPES_BY_MEAL={
+  cafe:[
+    {icon:"🍳",title:"Omelete com queijo minas",time:"10 min",kcal:320,protein:28,items:["2 ovos","queijo minas","tomate","orégano"],prep:"Bata os ovos, misture queijo e tomate. Faça em frigideira antiaderente."},
+    {icon:"🥣",title:"Iogurte com whey e mamão",time:"5 min",kcal:280,protein:30,items:["iogurte natural","whey","mamão","chia"],prep:"Misture o whey no iogurte e finalize com mamão picado e chia."},
+    {icon:"🥞",title:"Panqueca de banana e aveia",time:"10 min",kcal:300,protein:18,items:["banana","ovo","aveia","canela"],prep:"Amasse a banana, misture com ovo e aveia e doure dos dois lados."},
+    {icon:"🥪",title:"Sanduíche integral de ovo",time:"8 min",kcal:340,protein:24,items:["pão integral","ovos mexidos","creme de ricota","alface"],prep:"Monte o sanduíche com ovos mexidos, folhas e creme de ricota."},
+    {icon:"🌽",title:"Cuscuz com ovos mexidos",time:"12 min",kcal:350,protein:22,items:["cuscuz","2 ovos","tomate","queijo minas"],prep:"Prepare o cuscuz e sirva com ovos mexidos e tomate picado."},
+    {icon:"☕",title:"Shake de café com whey",time:"5 min",kcal:220,protein:25,items:["café","whey","leite desnatado","gelo"],prep:"Bata tudo no liquidificador até ficar cremoso."}
+  ],
+  almoco:[
+    {icon:"🍛",title:"Frango com arroz, feijão e salada",time:"25 min",kcal:480,protein:42,items:["frango grelhado","arroz","feijão","salada"],prep:"Monte um prato simples com porções controladas e salada à vontade."},
+    {icon:"🐟",title:"Tilápia com purê de abóbora",time:"25 min",kcal:410,protein:38,items:["filé de peixe","abóbora","salada","limão"],prep:"Grelhe o peixe e sirva com abóbora amassada e salada."},
+    {icon:"🥩",title:"Patinho moído com legumes",time:"20 min",kcal:430,protein:36,items:["patinho moído","abobrinha","cenoura","arroz"],prep:"Refogue a carne com legumes e acompanhe com pequena porção de arroz."},
+    {icon:"🥗",title:"Salada completa com grão-de-bico",time:"10 min",kcal:390,protein:20,items:["grão-de-bico","tomate","pepino","frango ou atum"],prep:"Misture tudo e tempere com limão e pouco azeite."},
+    {icon:"🍠",title:"Frango desfiado com batata doce",time:"25 min",kcal:460,protein:40,items:["frango desfiado","batata doce","salada","azeite"],prep:"Cozinhe a batata, aqueça o frango e sirva com salada."},
+    {icon:"🍝",title:"Macarrão integral com frango",time:"25 min",kcal:520,protein:42,items:["macarrão integral","frango","molho de tomate","legumes"],prep:"Cozinhe o macarrão e misture com frango e molho simples."}
+  ],
+  jantar:[
+    {icon:"🍲",title:"Sopa leve de frango",time:"30 min",kcal:360,protein:34,items:["frango","abóbora","cenoura","chuchu"],prep:"Cozinhe tudo, desfie o frango e ajuste temperos."},
+    {icon:"🥚",title:"Omelete de legumes",time:"12 min",kcal:310,protein:24,items:["ovos","abobrinha","tomate","queijo"],prep:"Misture ovos e legumes picados e cozinhe em fogo baixo."},
+    {icon:"🌯",title:"Wrap integral de frango",time:"10 min",kcal:390,protein:35,items:["wrap integral","frango","alface","creme de ricota"],prep:"Recheie o wrap, enrole e aqueça rapidamente."},
+    {icon:"🐟",title:"Peixe com arroz e feijão",time:"25 min",kcal:500,protein:40,items:["peixe","arroz","feijão","salada"],prep:"Use porção controlada de arroz e feijão com peixe grelhado."},
+    {icon:"🥒",title:"Abobrinha recheada com frango",time:"30 min",kcal:380,protein:36,items:["abobrinha","frango desfiado","molho de tomate","queijo"],prep:"Recheie a abobrinha e leve ao forno até gratinar."},
+    {icon:"🥣",title:"Bowl de lentilha com ovo",time:"18 min",kcal:420,protein:28,items:["lentilha","ovo","tomate","folhas"],prep:"Sirva lentilha cozida com ovo e salada fresca."}
+  ]
+};
 function recipeIndexSeed(){
   let d=new Date((state.date||formatLocalDate(new Date()))+"T12:00:00");
   let start=new Date(d.getFullYear(),0,0);
   return Math.floor((d-start)/86400000);
 }
+function pickRecipes(cat,qty=2){
+  let arr=RECIPES_BY_MEAL[cat.key]||[];
+  let seed=recipeIndexSeed()+cat.offset;
+  return Array.from({length:Math.min(qty,arr.length)},(_,i)=>arr[(seed*qty+i)%arr.length]);
+}
 function renderDailyRecipes(){
   let box=document.getElementById("dailyRecipes"); if(!box)return;
   let badge=document.getElementById("recipeDateBadge");
   let selectedDate=new Date((state.date||formatLocalDate(new Date()))+"T12:00:00");
-  if(badge)badge.textContent=state.date===formatLocalDate(new Date())?"Hoje":formatShortDate(selectedDate);
-  let seed=recipeIndexSeed();
-  let start=(seed*3)%FITNESS_RECIPES.length;
-  let list=[0,1,2].map(i=>FITNESS_RECIPES[(start+i)%FITNESS_RECIPES.length]);
-  box.innerHTML=list.map(r=>`
-    <div class="card overflow-hidden">
-      <img src="${r.img}" alt="${r.title}" class="w-full h-44 object-cover" loading="lazy">
-      <div class="p-4">
-        <div class="flex justify-between gap-2 items-start">
-          <h3 class="font-black text-teal-700">${r.title}</h3>
+  if(badge)badge.textContent=state.date===formatLocalDate(new Date())?`Hoje • ${formatDisplayDate(selectedDate)}`:formatDisplayDate(selectedDate);
+  let cats=[{key:"cafe",label:"☕ Café da manhã",offset:0},{key:"almoco",label:"🍛 Almoço",offset:9},{key:"jantar",label:"🌙 Jantar",offset:18}];
+  box.innerHTML=cats.map(cat=>{
+    let cards=pickRecipes(cat,2).map(r=>`
+      <div class="tip-card">
+        <div class="flex items-start justify-between gap-3">
+          <div class="text-5xl leading-none bg-emerald-50 rounded-3xl p-4">${r.icon}</div>
           <span class="pill">${r.time}</span>
         </div>
-        <p class="text-sm text-slate-600 mt-2"><b>${r.kcal} kcal</b> • <b>${r.protein} g</b> proteína aprox.</p>
+        <h4 class="font-black text-teal-700 text-lg mt-3">${r.title}</h4>
+        <p class="text-sm text-slate-600 mt-1"><b>${r.kcal} kcal</b> • <b>${r.protein} g</b> proteína aprox.</p>
         <p class="text-xs font-bold text-slate-500 mt-3">Ingredientes</p>
         <p class="text-sm">${r.items.join(" • ")}</p>
         <p class="text-xs font-bold text-slate-500 mt-3">Preparo</p>
         <p class="text-sm text-slate-600">${r.prep}</p>
-      </div>
-    </div>
-  `).join("");
+      </div>`).join("");
+    return `<div><h3 class="font-black text-xl mb-3">${cat.label}</h3><div class="grid md:grid-cols-2 gap-4">${cards}</div></div>`;
+  }).join("");
+}
+
+
+function minutesOf(v){let [h,m]=String(v||"08:00").split(":").map(Number);return (h||0)*60+(m||0)}
+function timeFromMinutes(total){total=Math.max(0,Math.min(1439,Math.round(total)));let h=String(Math.floor(total/60)).padStart(2,"0"),m=String(total%60).padStart(2,"0");return `${h}:${m}`}
+function hydrationSchedule(){
+  ensureAppDefaults();
+  let target=targets().water, cup=Number(state.profile.cup||250), cups=Math.max(1,Math.ceil(target/cup));
+  let start=minutesOf(state.notifications.waterStart), end=minutesOf(state.notifications.waterEnd);
+  if(end<=start)end=start+720;
+  return Array.from({length:cups},(_,i)=>{
+    let min=cups===1?start:start+((end-start)*i/(cups-1));
+    let amount=Math.min(target,cup*(i+1));
+    return {time:timeFromMinutes(min),minutes:Math.round(min),amount,cupSize:Math.min(cup,Math.max(0,target-cup*i))};
+  });
+}
+function renderHydrationPlan(){
+  let box=document.getElementById("hydrationPlan"); if(!box)return;
+  ensureAppDefaults(); let t=targets(),l=state.logs[state.date]||{water:0};
+  let slots=hydrationSchedule(); let done=Math.min(100,(l.water/Math.max(1,t.water))*100);
+  box.innerHTML=`<div class="grid md:grid-cols-3 gap-3">
+    <div class="metric-card"><p class="text-xs font-bold text-slate-500">META DO DIA</p><p class="text-2xl font-black">${t.water} ml</p><p class="mini-note">${Math.ceil(t.water/(state.profile.cup||250))} copos de ${state.profile.cup||250} ml</p></div>
+    <div class="metric-card"><p class="text-xs font-bold text-slate-500">JÁ REGISTRADO</p><p class="text-2xl font-black">${l.water||0} ml</p><div class="bar mt-2"><div class="bg-emerald-500" style="width:${done}%"></div></div></div>
+    <div class="metric-card"><p class="text-xs font-bold text-slate-500">LEMBRETES</p><label class="flex items-center gap-2 mt-2 font-bold"><input type="checkbox" ${state.notifications.waterEnabled?"checked":""} onchange="toggleWaterNotifications(this.checked)" class="w-5 h-5"> Beber água</label><p class="mini-note mt-1">${notificationPermissionText()}</p></div>
+  </div>
+  <div class="grid grid-cols-2 md:grid-cols-4 gap-2 mt-4">${slots.map(s=>`<div class="bg-slate-50 rounded-2xl p-3 text-center"><p class="font-black">${s.time}</p><p class="text-xs text-slate-500">até ${s.amount} ml</p></div>`).join("")}</div>`;
+}
+function notificationPermissionText(){if(!("Notification" in window))return "Este navegador não suporta notificação.";return Notification.permission==="granted"?"Notificações permitidas.":Notification.permission==="denied"?"Permissão bloqueada no navegador.":"Permissão ainda não concedida."}
+async function requestNotificationPermission(){
+  if(!("Notification" in window)){alert("Este navegador não suporta notificações.");return false;}
+  let perm=Notification.permission==="granted"?"granted":await Notification.requestPermission();
+  renderHydrationPlan(); if(document.getElementById("glp1")?.classList.contains("active"))renderGlp1Page();
+  alert(perm==="granted"?"Notificações ativadas neste aparelho.":"As notificações não foram permitidas.");
+  return perm==="granted";
+}
+function toggleWaterNotifications(v){ensureAppDefaults();state.notifications.waterEnabled=!!v;save();if(v&&(!("Notification" in window)||Notification.permission!=="granted"))requestNotificationPermission();renderHydrationPlan();}
+function showLocalNotification(title,body,tag){
+  if(!("Notification" in window)||Notification.permission!=="granted")return;
+  let opts={body,tag,icon:"icons/icon-192.png",badge:"icons/icon-192.png"};
+  if(navigator.serviceWorker&&navigator.serviceWorker.ready){navigator.serviceWorker.ready.then(reg=>reg.showNotification(title,opts)).catch(()=>new Notification(title,opts));}
+  else new Notification(title,opts);
+}
+function hasAndroidNotifications(){return !!(window.AndroidNotifications&&AndroidNotifications.isAvailable&&AndroidNotifications.isAvailable())}
+function notificationPermissionText(){if(hasAndroidNotifications())return AndroidNotifications.permissionText();if(!("Notification" in window))return "Notificacoes nativas disponiveis no APK atualizado.";return Notification.permission==="granted"?"Notificacoes permitidas.":Notification.permission==="denied"?"Permissao bloqueada no navegador.":"Permissao ainda nao concedida."}
+async function requestNotificationPermission(){
+  if(hasAndroidNotifications()){AndroidNotifications.requestPermission();renderHydrationPlan();if(document.getElementById("glp1")?.classList.contains("active"))renderGlp1Page();alert("Notificacoes do NutriCam ativadas. Se o Android pedir permissao, toque em Permitir.");return true;}
+  if(!("Notification" in window)){alert("Instale o APK atualizado para usar notificacoes nativas do Android.");return false;}
+  let perm=Notification.permission==="granted"?"granted":await Notification.requestPermission();
+  renderHydrationPlan(); if(document.getElementById("glp1")?.classList.contains("active"))renderGlp1Page();
+  alert(perm==="granted"?"Notificacoes ativadas neste aparelho.":"As notificacoes nao foram permitidas.");
+  return perm==="granted";
+}
+function toggleWaterNotifications(v){ensureAppDefaults();state.notifications.waterEnabled=!!v;save();if(v&&(hasAndroidNotifications()||!("Notification" in window)||Notification.permission!=="granted"))requestNotificationPermission();renderHydrationPlan();}
+function showLocalNotification(title,body,tag){
+  if(hasAndroidNotifications()){AndroidNotifications.notify(String(title||"NutriCam"),String(body||""),String(tag||"nutricam"));return;}
+  if(!("Notification" in window)||Notification.permission!=="granted")return;
+  let opts={body,tag,icon:"icons/icon-192.png",badge:"icons/icon-192.png"};
+  if(navigator.serviceWorker&&navigator.serviceWorker.ready){navigator.serviceWorker.ready.then(reg=>reg.showNotification(title,opts)).catch(()=>new Notification(title,opts));}
+  else new Notification(title,opts);
+}
+let notifyTimer=null;
+function scheduleNotificationChecks(){if(notifyTimer)clearInterval(notifyTimer);checkNotificationDue();notifyTimer=setInterval(checkNotificationDue,60000)}
+function checkNotificationDue(){checkWaterNotification();checkGlp1Notification();}
+function checkWaterNotification(){
+  ensureAppDefaults(); if(!state.notifications.waterEnabled)return; let today=formatLocalDate(new Date()); let log=state.logs[today]||{water:0}; let target=targets().water; if(log.water>=target)return;
+  let now=new Date(),cur=now.getHours()*60+now.getMinutes(); let due=hydrationSchedule().filter(s=>s.minutes<=cur).pop(); if(!due)return;
+  let key=`agua-${today}-${due.time}`; if(state.notifications.last.water===key)return;
+  state.notifications.last.water=key; save(); showLocalNotification("Hora de beber água",`Meta de hoje: ${target} ml. Até agora: ${log.water||0} ml.`,"nutricam-water");
+}
+function waterStatusFor(dateValue=formatLocalDate(new Date())){
+  ensureAppDefaults(); let t=targets(), log=state.logs[dateValue]||{foods:[],water:0};
+  let current=+(log.water||0), target=+t.water||0, missing=Math.max(0,target-current);
+  return {target,current,missing,cup:+(state.profile.cup||250),percent:Math.min(100,(current/Math.max(1,target))*100)};
+}
+function updateWaterNotificationStatus(){
+  let today=formatLocalDate(new Date()); if(!state.notifications?.waterEnabled)return;
+  let ws=waterStatusFor(today), body=ws.missing>0?`Voce bebeu ${ws.current} ml hoje. Faltam ${ws.missing} ml para bater a meta.`:`Meta de agua batida: ${ws.current} ml hoje.`;
+  showLocalNotification(ws.missing>0?"Agua do dia":"Meta de agua batida",body,"nutricam-water",ws.missing>0?"Adicionar copo":"");
+}
+function addWater(){state.logs[state.date]=state.logs[state.date]||{foods:[],water:0};state.logs[state.date].water+=state.profile.cup;save();update();if(state.date===formatLocalDate(new Date()))updateWaterNotificationStatus();}
+function addWaterFromNotification(){
+  ensureAppDefaults(); let today=formatLocalDate(new Date());
+  if(!state.logs[today])state.logs[today]={foods:[],water:0};
+  state.logs[today].water+=(+(state.profile.cup||250));
+  save(); if(state.date===today)update(); else renderHydrationPlan();
+  updateWaterNotificationStatus();
+}
+function renderHydrationPlan(){
+  let box=document.getElementById("hydrationPlan"); if(!box)return;
+  let ws=waterStatusFor(state.date||formatLocalDate(new Date()));
+  box.innerHTML=`<div class="grid md:grid-cols-3 gap-3">
+    <div class="metric-card"><p class="text-xs font-bold text-slate-500">META DO DIA</p><p class="text-2xl font-black">${ws.target} ml</p><p class="mini-note">${Math.ceil(ws.target/(state.profile.cup||250))} copos de ${state.profile.cup||250} ml</p></div>
+    <div class="metric-card"><p class="text-xs font-bold text-slate-500">JA REGISTRADO</p><p class="text-2xl font-black">${ws.current} ml</p><p class="mini-note">${ws.missing>0?`Faltam ${ws.missing} ml`:"Meta de agua batida"}</p><div class="bar mt-2"><div class="bg-emerald-500" style="width:${ws.percent}%"></div></div></div>
+    <div class="metric-card"><p class="text-xs font-bold text-slate-500">LEMBRETES</p><label class="flex items-center gap-2 mt-2 font-bold"><input type="checkbox" ${state.notifications.waterEnabled?"checked":""} onchange="toggleWaterNotifications(this.checked)" class="w-5 h-5"> Beber agua</label><p class="mini-note mt-1">${notificationPermissionText()}</p></div>
+  </div>`;
+}
+function showLocalNotification(title,body,tag,actionLabel){
+  if(hasAndroidNotifications()){if(AndroidNotifications.notifyWithAction)AndroidNotifications.notifyWithAction(String(title||"NutriCam"),String(body||""),String(tag||"nutricam"),String(actionLabel||""));else AndroidNotifications.notify(String(title||"NutriCam"),String(body||""),String(tag||"nutricam"));return;}
+  if(!("Notification" in window)||Notification.permission!=="granted")return;
+  let opts={body,tag,icon:"icons/icon-192.png",badge:"icons/icon-192.png"};
+  if(navigator.serviceWorker&&navigator.serviceWorker.ready){navigator.serviceWorker.ready.then(reg=>reg.showNotification(title,opts)).catch(()=>new Notification(title,opts));}
+  else new Notification(title,opts);
+}
+function checkWaterNotification(){
+  ensureAppDefaults(); if(!state.notifications.waterEnabled)return; let today=formatLocalDate(new Date());
+  if(!state.logs[today])state.logs[today]={foods:[],water:0};
+  let ws=waterStatusFor(today); if(ws.current>=ws.target)return;
+  let now=new Date(),cur=now.getHours()*60+now.getMinutes(); let due=hydrationSchedule().filter(s=>s.minutes<=cur).pop(); if(!due)return;
+  let key=`agua-${today}-${due.time}`; if(state.notifications.last.water===key)return;
+  state.notifications.last.water=key; save(); showLocalNotification("Hora de beber agua",`Voce bebeu ${ws.current} ml hoje. Faltam ${ws.missing} ml para bater a meta.`,"nutricam-water","Adicionar copo");
+}
+function glp1MedicationNames(){
+  ensureAppDefaults();
+  let names=[...(state.glp1.medications||[]),...(state.glp1.applications||[]).map(x=>x.name),state.glp1.reminder?.name].filter(Boolean).map(x=>String(x).trim()).filter(Boolean);
+  return [...new Set(names)].sort((a,b)=>a.localeCompare(b));
+}
+function renderGlp1MedicationList(){
+  let list=document.getElementById("glp1MedicationList"); if(!list)return;
+  list.innerHTML=glp1MedicationNames().map(name=>`<option value="${safeHtml(name)}"></option>`).join("");
+}
+function rememberGlp1Medication(name){
+  ensureAppDefaults(); name=String(name||"").trim(); if(!name)return;
+  state.glp1.medications=glp1MedicationNames();
+  if(!state.glp1.medications.some(x=>x.toLowerCase()===name.toLowerCase()))state.glp1.medications.push(name);
+}
+function setInputValue(id,val){let el=document.getElementById(id); if(el)el.value=val||""}
+function renderGlp1Page(){
+  ensureAppDefaults();
+  renderGlp1MedicationList();
+  let r=state.glp1.reminder;
+  setInputValue("glp1Date",state.date||formatLocalDate(new Date()));
+  if(!glp1EditId.value){setInputValue("glp1Name",r.name||"");setInputValue("glp1Lot","");setInputValue("glp1Dose",r.dose||"");}
+  glp1ReminderEnabled.checked=!!r.enabled; glp1ReminderDate.value=r.date||""; glp1ReminderTime.value=r.time||"08:00"; glp1RepeatDays.value=r.repeatDays||7;
+  let list=(state.glp1.applications||[]).slice().sort((a,b)=>String(b.date).localeCompare(String(a.date)));
+  let last=list[0];
+  glp1StatusBadge.textContent=last?`Última: ${formatDisplayDate(last.date)}`:"Sem registro";
+  glp1NextBox.innerHTML=r.enabled&&r.date?`<div class="bg-emerald-50 border border-emerald-100 rounded-2xl p-3"><b>Próximo lembrete:</b> ${formatDisplayDate(r.date)} às ${r.time||"08:00"} • repetição a cada ${r.repeatDays||7} dias.<p class="mini-note mt-1">${notificationPermissionText()}</p></div>`:`<div class="bg-gray-50 rounded-2xl p-3 text-gray-600">Lembrete de aplicação desativado.</div>`;
+  glp1List.innerHTML=list.length?list.map(x=>`<div class="border rounded-2xl p-3 bg-white flex justify-between gap-3 items-center"><div><b>${x.name||"Medicação GLP-1"}</b><p class="text-sm text-slate-600">Data: ${formatDisplayDate(x.date)} • Dose: ${x.dose||"-"} • Lote: ${x.lot||"-"}</p></div><div class="flex gap-2"><button onclick="editGlp1Application('${x.id}')" class="bg-blue-50 text-blue-700 rounded-xl px-3 py-1 text-xs font-bold">Editar</button><button onclick="deleteGlp1Application('${x.id}')" class="bg-red-50 text-red-600 rounded-xl px-3 py-1 text-xs font-bold">Excluir</button></div></div>`).join(""):`<div class="text-center text-gray-500 bg-gray-50 rounded-2xl p-4">Nenhuma aplicação registrada.</div>`;
+}
+function saveGlp1Application(){
+  ensureAppDefaults(); let id=glp1EditId.value||uid(); let app={id,name:glp1Name.value.trim(),lot:glp1Lot.value.trim(),date:glp1Date.value||state.date,dose:glp1Dose.value.trim()};
+  rememberGlp1Medication(app.name);
+  if(!app.name){alert("Informe o nome da medicação.");return} if(!app.date){alert("Informe a data da aplicação.");return}
+  let idx=state.glp1.applications.findIndex(x=>x.id===id); if(idx>=0)state.glp1.applications[idx]=app; else state.glp1.applications.push(app);
+  state.glp1.reminder.name=app.name; state.glp1.reminder.dose=app.dose;
+  save(); cancelGlp1Edit(); renderGlp1Page();
+}
+function editGlp1Application(id){let x=state.glp1.applications.find(a=>a.id===id);if(!x)return;glp1EditId.value=x.id;glp1Name.value=x.name||"";glp1Lot.value=x.lot||"";glp1Date.value=x.date||state.date;glp1Dose.value=x.dose||"";glp1SaveBtn.textContent="Atualizar aplicação";glp1CancelBtn.classList.remove("hidden");}
+function deleteGlp1Application(id){if(!confirm("Excluir este registro de aplicação?"))return;state.glp1.applications=state.glp1.applications.filter(x=>x.id!==id);save();renderGlp1Page();}
+function cancelGlp1Edit(){glp1EditId.value="";glp1Name.value=state.glp1?.reminder?.name||"";glp1Lot.value="";glp1Date.value=state.date;glp1Dose.value=state.glp1?.reminder?.dose||"";glp1SaveBtn.textContent="Salvar aplicação";glp1CancelBtn.classList.add("hidden");}
+function saveGlp1Reminder(){
+  ensureAppDefaults(); state.glp1.reminder.enabled=glp1ReminderEnabled.checked; state.glp1.reminder.date=glp1ReminderDate.value; state.glp1.reminder.time=glp1ReminderTime.value||"08:00"; state.glp1.reminder.repeatDays=Math.max(1,+glp1RepeatDays.value||7);
+  save(); if(state.glp1.reminder.enabled&&(!("Notification" in window)||Notification.permission!=="granted"))requestNotificationPermission(); renderGlp1Page(); scheduleNotificationChecks();
+}
+function checkGlp1Notification(){
+  ensureAppDefaults(); let r=state.glp1.reminder; if(!r.enabled||!r.date)return;
+  let due=new Date(`${r.date}T${r.time||"08:00"}:00`), now=new Date(); if(now<due)return;
+  let key=`glp1-${r.date}-${r.time||"08:00"}`; if(state.notifications.last.glp1!==key){state.notifications.last.glp1=key;showLocalNotification("Lembrete de aplicação GLP-1",`${r.name||"Medicação"}${r.dose?" • dose "+r.dose:""}. Confira sua prescrição.`,"nutricam-glp1");}
+  let next=new Date(due); while(next<=now)next.setDate(next.getDate()+(+r.repeatDays||7)); r.date=formatLocalDate(next); save(); if(document.getElementById("glp1")?.classList.contains("active"))renderGlp1Page();
 }
 
 function promptText(){return `Você é um nutricionista especialista em análise visual de alimentos. Analise TODOS os alimentos visíveis na imagem.
@@ -747,7 +1059,7 @@ async function interpretReviewItem(i,desc){
   }catch(e){debug.textContent="Erro ao interpretar descrição: "+String(e.message||e);debug.classList.remove("hidden");recalcReviewByMeasure(i)}
   finally{loading.classList.add("hidden")}
 }
-function unitOptions(selected){let opts=[["base","porção atual"],["g","gramas"],["portion","medida do plano"],["unit","unidade"],["slice","fatia"],["tbsp","colher de sopa"],["tsp","colher de chá"],["cup","xícara/copo"],["scoop","medidor"]];return opts.map(o=>`<option value="${o[0]}" ${selected===o[0]?"selected":""}>${o[1]}</option>`).join("")}
+function unitOptions(selected){let opts=[["base","porção atual"],["g","gramas"],["portion","medida padrão"],["unit","unidade"],["slice","fatia"],["tbsp","colher de sopa"],["tsp","colher de chá"],["cup","xícara/copo"],["scoop","medidor"]];return opts.map(o=>`<option value="${o[0]}" ${selected===o[0]?"selected":""}>${o[1]}</option>`).join("")}
 function renderReview(){reviewItems.innerHTML=review.map((f,i)=>`
 <div class="border rounded-2xl p-4 space-y-3 bg-gray-50">
 <div><label class="field-label">DESCRIÇÃO DO ALIMENTO</label><div class="flex gap-2"><input value="${String(f.name||"").replaceAll('"','&quot;')}" onchange="interpretReviewItem(${i},this.value)" class="rv-name border rounded-xl p-3 w-full mt-1" placeholder="Ex: 2 fatias de pão com queijo minas"><button onclick="interpretReviewItem(${i},document.querySelectorAll('#reviewItems .rv-name')[${i}].value)" class="bg-purple-100 text-purple-700 rounded-xl px-3 py-2 font-bold mt-1">IA</button></div><p class="mini-note">Ao alterar a descrição, a IA tenta interpretar porção, gramas, calorias e macros.</p></div>
@@ -763,11 +1075,25 @@ function renderReview(){reviewItems.innerHTML=review.map((f,i)=>`
 </div><p class="mini-note">Mostrando ${f.measure||f.grams+' g'} • usado no cálculo: ${f.grams}g • ${f.kcal} kcal</p></div>`).join("")}
 function saveReview(){let meal=reviewMeal.value;review.forEach(f=>{let clean={...f,id:uid(),meal};delete clean._og;delete clean._ok;delete clean._op;delete clean._oc;delete clean._oe;state.logs[state.date].foods.push(clean)});save();closeReview();update();mealText.value=""}
 function openManual(){manualModal.classList.add("active");renderManual()} function closeManual(){manualModal.classList.remove("active")} function renderManual(){let q=(manualSearch.value||"").toLowerCase(),qty=+manualQty.value||1,unit=manualUnit.value||"portion";manualList.innerHTML=state.foods.filter(f=>f.name.toLowerCase().includes(q)).map(f=>{let g=gramsFromMeasure(f,qty,unit),it=scale(f,g),med=measureLabel(f,qty,unit,g);return `<button class="w-full text-left border rounded-xl p-3 mb-2" onclick="addManual('${f.id}')"><b>${f.name}</b><br><span class="text-xs">${med} ≈ ${g}g • ${it.kcal} kcal</span></button>`}).join("")} function addManual(id){let f=state.foods.find(x=>x.id===id),qty=+manualQty.value||1,unit=manualUnit.value||"portion",g=gramsFromMeasure(f,qty,unit),it=withMeasure(scale(f,g),f,qty,unit);state.logs[state.date].foods.push({...it,id:uid(),meal:manualMeal.value});manualSearch.value="";save();closeManual();update()}
-function renderFoods(){let q=(foodSearch.value||"").toLowerCase();foods.innerHTML=state.foods.filter(f=>f.name.toLowerCase().includes(q)).map(f=>`<div class="border-b py-3 flex justify-between text-sm"><div><b>${f.name}</b><p class="text-gray-500">${f.grams}g: ${f.kcal} kcal • P ${f.p} • C ${f.c} • G ${f.g}</p></div><button onclick="openFood('${f.id}')" class="text-blue-600">editar</button></div>`).join("")} function openFood(id){let f=id?state.foods.find(x=>x.id===id):{id:"",name:"",grams:100,kcal:"",p:"",c:"",g:""};foodModal.classList.add("active");fId.value=f.id;fName.value=f.name;fKcal.value=f.kcal;fP.value=f.p;fC.value=f.c;fG.value=f.g} function closeFood(){foodModal.classList.remove("active")} function saveFood(){let f={id:fId.value||uid(),name:fName.value,grams:100,kcal:+fKcal.value,p:+fP.value,c:+fC.value,g:+fG.value};let i=state.foods.findIndex(x=>x.id===f.id);if(i>=0)state.foods[i]=f;else state.foods.push(f);save();closeFood();renderFoods()}
+function renderFoods(){if(foodCount)foodCount.textContent=`${state.foods.length} alimentos cadastrados.`;let q=(foodSearch.value||"").toLowerCase();foods.innerHTML=state.foods.filter(f=>f.name.toLowerCase().includes(q)).map(f=>`<div class="border-b py-3 flex justify-between text-sm"><div><b>${f.name}</b><p class="text-gray-500">${f.grams}g: ${f.kcal} kcal • P ${f.p} • C ${f.c} • G ${f.g}</p></div><button onclick="openFood('${f.id}')" class="text-blue-600">editar</button></div>`).join("")} function openFood(id){let f=id?state.foods.find(x=>x.id===id):{id:"",name:"",grams:100,kcal:"",p:"",c:"",g:""};foodModal.classList.add("active");fId.value=f.id;fName.value=f.name;fKcal.value=f.kcal;fP.value=f.p;fC.value=f.c;fG.value=f.g} function closeFood(){foodModal.classList.remove("active")} function saveFood(){let f={id:fId.value||uid(),name:fName.value,grams:100,kcal:+fKcal.value,p:+fP.value,c:+fC.value,g:+fG.value};let i=state.foods.findIndex(x=>x.id===f.id);if(i>=0)state.foods[i]=f;else state.foods.push(f);save();closeFood();renderFoods()}
+function ensureAppDefaults(){
+  state.logs=state.logs||{};
+  state.weights=state.weights||[];
+  state.foods=state.foods||START_FOODS;
+  state.glp1=state.glp1||{};
+  state.glp1.applications=state.glp1.applications||[];
+  state.glp1.medications=state.glp1.medications||[];
+  state.glp1.reminder=Object.assign({enabled:false,date:"",time:"08:00",repeatDays:7},state.glp1.reminder||{});
+  state.notifications=Object.assign({waterEnabled:false,waterStart:"08:00",waterEnd:"21:00",last:{}},state.notifications||{});
+  state.notifications.last=state.notifications.last||{};
+}
 function ensureProfileDefaults(){
+  ensureAppDefaults();
   state.profile=state.profile||{};
   if(!state.profile.targetWeight){state.profile.targetWeight=suggestedTargetWeight(state.profile.height||171).upper;}
   if(!state.profile.weeklyLoss){state.profile.weeklyLoss=0.5;}
+  if(!state.profile.cup){state.profile.cup=250;}
+  if(!state.profile.waterMlKg){state.profile.waterMlKg=35;}
 }
 function idealWeightRange(heightCm){let h=(heightCm||171)/100;return {min:18.5*h*h, upper:24.9*h*h, mid:22*h*h};}
 function suggestedTargetWeight(heightCm){let r=idealWeightRange(heightCm);return {min:+r.min.toFixed(1), upper:+r.upper.toFixed(1), mid:+r.mid.toFixed(1)};}
@@ -809,7 +1135,7 @@ function cancelWeightEdit(reset=true){
 }
 function deleteWeight(date){
   normalizeWeights(); let x=state.weights.find(w=>w.date===date); if(!x)return;
-  if(!confirm(`Excluir o registro de ${date} (${x.weight} kg)?`))return;
+  if(!confirm(`Excluir o registro de ${formatDisplayDate(date)} (${x.weight} kg)?`))return;
   lastDeletedWeight={...x}; state.weights=state.weights.filter(w=>w.date!==date);
   if(state.weights.length) state.profile.weight=state.weights[state.weights.length-1].weight;
   save(); fillProfile(); renderWeights(); update(); showWeightUndo();
@@ -840,7 +1166,7 @@ function renderWeights(){
     let delta=prev?+(x.weight-prev.weight).toFixed(1):0;
     let deltaTxt=prev?`${delta>0?"+":""}${delta} kg desde a anterior`:"primeiro registro";
     let bestTag=x.weight===best?`<span class="pill">menor peso</span>`:"";
-    return `<div class="border rounded-2xl p-3 flex justify-between items-center gap-3 bg-white"><div><div class="flex items-center gap-2 flex-wrap"><b>${x.date}</b>${bestTag}</div><p class="text-xs text-gray-500">${deltaTxt}</p></div><div class="text-right"><p class="font-black">${x.weight} kg</p><div class="flex gap-2 mt-2"><button onclick="editWeight('${x.date}')" class="bg-blue-50 text-blue-700 rounded-xl px-3 py-1 text-xs font-bold">Editar</button><button onclick="duplicateWeight('${x.date}')" class="bg-gray-100 rounded-xl px-3 py-1 text-xs font-bold">Duplicar</button><button onclick="deleteWeight('${x.date}')" class="bg-red-50 text-red-600 rounded-xl px-3 py-1 text-xs font-bold">Excluir</button></div></div></div>`
+    return `<div class="border rounded-2xl p-3 flex justify-between items-center gap-3 bg-white"><div><div class="flex items-center gap-2 flex-wrap"><b>${formatDisplayDate(x.date)}</b>${bestTag}</div><p class="text-xs text-gray-500">${deltaTxt}</p></div><div class="text-right"><p class="font-black">${x.weight} kg</p><div class="flex gap-2 mt-2"><button onclick="editWeight('${x.date}')" class="bg-blue-50 text-blue-700 rounded-xl px-3 py-1 text-xs font-bold">Editar</button><button onclick="duplicateWeight('${x.date}')" class="bg-gray-100 rounded-xl px-3 py-1 text-xs font-bold">Duplicar</button><button onclick="deleteWeight('${x.date}')" class="bg-red-50 text-red-600 rounded-xl px-3 py-1 text-xs font-bold">Excluir</button></div></div></div>`
   }).join(""):`<div class="text-center text-gray-500 bg-gray-50 rounded-2xl p-4">Nenhum registro encontrado.</div>`;
   renderWeightGoalBox(); drawWeight();
 }
@@ -860,6 +1186,28 @@ function drawWeight(){
 function weightCanvasClick(ev){
   let r=weightCanvas.getBoundingClientRect(),x=(ev.clientX-r.left)*(weightCanvas.width/r.width),y=(ev.clientY-r.top)*(weightCanvas.height/r.height);
   let hit=weightChartPoints.find(p=>Math.hypot(p.x-x,p.y-y)<18); if(hit)editWeight(hit.date);
+}
+
+function drawWeight(){
+  let cn=weightCanvas,ctx=cn.getContext("2d"),W=cn.width,H=cn.height;ctx.clearRect(0,0,W,H);weightChartPoints=[];normalizeWeights();let a=state.weights;
+  ctx.fillStyle="#f8fafc";ctx.fillRect(0,0,W,H);
+  if(!a.length){ctx.fillStyle="#64748b";ctx.font="700 26px Arial";ctx.fillText("Cadastre seu peso para ver a evolucao.",44,74);return}
+  let vals=a.map(x=>x.weight),wp=weightPlan();vals.push(wp.target);
+  let rawMin=Math.min(...vals),rawMax=Math.max(...vals),span=Math.max(2,rawMax-rawMin),min=Math.floor((rawMin-span*.18)*2)/2,max=Math.ceil((rawMax+span*.18)*2)/2;
+  let padL=82,padR=42,padT=86,padB=86,plotW=W-padL-padR,plotH=H-padT-padB;
+  let last=a[a.length-1],first=a[0],diff=+(last.weight-first.weight).toFixed(1),best=Math.min(...a.map(x=>x.weight));
+  ctx.fillStyle="#0f172a";ctx.font="900 30px Arial";ctx.fillText("Evolucao do peso",padL,42);
+  ctx.fillStyle="#64748b";ctx.font="700 18px Arial";ctx.fillText(`Atual ${last.weight.toFixed(1)} kg | ${diff>0?"+":""}${diff} kg desde ${formatDisplayDate(first.date)} | menor ${best.toFixed(1)} kg`,padL,70);
+  ctx.strokeStyle="#e2e8f0";ctx.lineWidth=2;ctx.font="700 16px Arial";ctx.fillStyle="#64748b";
+  for(let i=0;i<5;i++){let y=padT+i*plotH/4,val=max-(max-min)*i/4;ctx.beginPath();ctx.moveTo(padL,y);ctx.lineTo(W-padR,y);ctx.stroke();ctx.fillText(val.toFixed(1),20,y+5)}
+  let gy=padT+(max-wp.target)/(max-min)*plotH;
+  if(gy>=padT&&gy<=padT+plotH){ctx.setLineDash([12,9]);ctx.strokeStyle="#f97316";ctx.lineWidth=3;ctx.beginPath();ctx.moveTo(padL,gy);ctx.lineTo(W-padR,gy);ctx.stroke();ctx.setLineDash([]);ctx.fillStyle="#9a3412";ctx.font="800 16px Arial";ctx.fillText("Meta "+wp.target.toFixed(1)+" kg",padL+12,gy-12)}
+  let pts=a.map((x,i)=>({x:padL+i*(plotW/Math.max(1,a.length-1)),y:padT+(max-x.weight)/(max-min)*plotH,date:x.date,weight:x.weight}));
+  weightChartPoints=pts;
+  let grad=ctx.createLinearGradient(0,padT,0,padT+plotH);grad.addColorStop(0,"rgba(16,185,129,.26)");grad.addColorStop(1,"rgba(16,185,129,0)");
+  ctx.beginPath();pts.forEach((p,i)=>i?ctx.lineTo(p.x,p.y):ctx.moveTo(p.x,p.y));ctx.lineTo(pts[pts.length-1].x,padT+plotH);ctx.lineTo(pts[0].x,padT+plotH);ctx.closePath();ctx.fillStyle=grad;ctx.fill();
+  ctx.strokeStyle="#059669";ctx.lineWidth=6;ctx.lineJoin="round";ctx.lineCap="round";ctx.beginPath();pts.forEach((p,i)=>i?ctx.lineTo(p.x,p.y):ctx.moveTo(p.x,p.y));ctx.stroke();
+  pts.forEach((p,i)=>{ctx.fillStyle="#fff";ctx.strokeStyle=p.weight===best?"#0f766e":"#059669";ctx.lineWidth=5;ctx.beginPath();ctx.arc(p.x,p.y,11,0,Math.PI*2);ctx.fill();ctx.stroke();ctx.fillStyle="#0f172a";ctx.font="900 17px Arial";ctx.fillText(p.weight.toFixed(1)+" kg",Math.min(p.x+14,W-padR-90),Math.max(p.y-16,padT+18));if(i===0||i===pts.length-1||pts.length<=6){ctx.fillStyle="#64748b";ctx.font="700 14px Arial";ctx.fillText(formatDisplayDate(p.date),Math.max(p.x-38,padL-10),H-34)}});
 }
 
 function drawDailyCharts(){
